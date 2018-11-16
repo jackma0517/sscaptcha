@@ -2,12 +2,14 @@
 A new generation of captcha.
 
 ## Installation
-download node.js: https://nodejs.org/en/download/
-install socket.io: npm install --save socket.io
+Download node.js: https://nodejs.org/en/download/
+
+Install socket.io: npm install --save socket.io
 
 ## Run
-node server
-open localhost:8080
+Run: node server
+
+Open localhost:8080
 
 This is composed of a few components:
 
