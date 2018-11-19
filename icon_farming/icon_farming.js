@@ -1,6 +1,7 @@
 var NounProject = require('the-noun-project')
 var request = require('request')
 var fs = require('fs')
+var readline = require('readline')
 var sqlite3 = require('sqlite3').verbose()
 
 // This might need editing depending where you're calling it from
@@ -17,6 +18,7 @@ var nounproject = new NounProject({
 
 // TODO: get this from command line? 
 var icon_folder = process.env.ICON_FOLDER
+var icon_list = './label_list.txt'
 
 /**
  * Inserts the icon into the database with the proper label
@@ -27,7 +29,17 @@ function insert_into_database(icon, filename) {
     console.log(icon.term)
     let stmt = db.prepare('insert into icons (id, label, filename)\
                            values ($id, $label, $filename)')
-    stmt.run({$id: icon.id, $label: icon.term, $filename: filename})
+    stmt.run({$id: icon.id, $label: icon.term, $filename: filename}, 
+                function(error) {
+                    if (error) {
+                        if (error.toString().includes('UNIQUE constraint failed: icons.id')) {
+                            console.log('Value is already in the database')
+                        } else {
+                            console.log('Error inserting the value into the database')
+                            console.log(error)
+                        }
+                    }
+                })
 }
 
 /**
@@ -63,4 +75,14 @@ var cb_func = function(err, data) {
     }
 }
 
-nounproject.getIconsByTerm('sun', {limit: 10}, cb_func)
+// Read icons one by one from the list 
+// and grab the images and insert into db
+var rd = readline.createInterface({
+    input: fs.createReadStream(icon_list),
+    output: process.stdout,
+    console: false
+})
+
+rd.on('line', function(line) {
+    nounproject.getIconsByTerm(line, {limit: 10}, cb_func)
+})
