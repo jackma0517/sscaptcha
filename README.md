@@ -6,8 +6,8 @@ Download node.js: https://nodejs.org/en/download/
 
 Check required dependencies in package.json
 
-This also requires [mysql](https://www.mysql.com/), setup with 
-`db_setup/db_setup_script.sql`.
+This also requires [sqlite](https://www.npmjs.com/package/sqlite3), setup with 
+`db_setup/sqlite_setup.sql`.
 
 ## Environment Setup
 We use [dotenv](https://www.npmjs.com/package/dotenv) to manage
