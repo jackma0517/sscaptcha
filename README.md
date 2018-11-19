@@ -16,8 +16,8 @@ file containing the values below
 ```
 NP_KEY=noun_project_key
 NP_SECRET=noun_project_secret
-DB_USER=db_username
-DB_PASS=db_password
+SQLITE_DB=<path_to_sscaptcha>/sscaptcha.sqlite
+ICON_FOLDER=<path_to_sscaptcha>/icons
 ```
 
 ## Run

@@ -1,29 +1,22 @@
 var NounProject = require('the-noun-project')
-var mysql = require('mysql')
 var request = require('request')
 var fs = require('fs')
+var sqlite3 = require('sqlite3').verbose()
 
 // This might need editing depending where you're calling it from
 require('dotenv').config({path:'../.env'})
+var db = new sqlite3.Database(process.env.SQLITE_DB)
 
 var nounproject = new NounProject({
     key: process.env.NP_KEY,
     secret: process.env.NP_SECRET
 });
 
-var connection = mysql.createConnection({
-    host: 'localhost',
-    user:  process.env.DB_USER,
-    password:  process.env.DB_PASS,
-    database: 'sscaptcha'
-})
-connection.connect()
-
 // Download the file into the icons folder
 // add path and label to the database
 
 // TODO: get this from command line? 
-var icon_folder = '/home/valerian/Programming/sscaptcha/icons'
+var icon_folder = process.env.ICON_FOLDER
 
 /**
  * Inserts the icon into the database with the proper label
@@ -32,16 +25,9 @@ var icon_folder = '/home/valerian/Programming/sscaptcha/icons'
  */
 function insert_into_database(icon, filename) {
     console.log(icon.term)
-    connection.query('insert into icons (label, filename) values ?',
-        [[[icon.term, filename]]],
-        function (err, res, fields) {
-            if (err) {
-                throw err;
-            }
-            return
-        }
-    )
-    return
+    let stmt = db.prepare('insert into icons (id, label, filename)\
+                           values ($id, $label, $filename)')
+    stmt.run({$id: icon.id, $label: icon.term, $filename: filename})
 }
 
 /**
@@ -58,6 +44,7 @@ function download_icon(icon_folder, icon) {
         request(icon.preview_url).pipe(fs.createWriteStream(full_filepath))
             .on('close', function() {
                 insert_into_database(icon, filename)
+                return
             })
     })
     return
@@ -76,4 +63,4 @@ var cb_func = function(err, data) {
     }
 }
 
-nounproject.getIconsByTerm('star', {limit: 2}, cb_func)
+nounproject.getIconsByTerm('sun', {limit: 10}, cb_func)
