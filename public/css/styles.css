@@ -23,14 +23,18 @@ body {
 	width: 1000px;
 }
 
-#poke {
+#submit-btn {
     background-color: #4D94FF;
 	border: none;
 	color: #FFFFFF;
 	float: right;
 	font: 18px/24px Inconsolata, Arial;
 }
-#poke:hover {
+#submit-btn:hover {
 	background-color: #003D99;
 	border: none;
 }
+
+#submit-btn:active {
+	transform: translateY(4px);
+  }
