@@ -4,6 +4,9 @@ A new generation of captcha.
 ## Installation
 Download node.js: https://nodejs.org/en/download/
 
+Install Express: npm install express
+
+
 Check required dependencies in package.json
 
 This also requires [sqlite](https://www.npmjs.com/package/sqlite3), setup with 
