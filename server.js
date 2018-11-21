@@ -1,34 +1,42 @@
-var http = require('http');
-var fs = require('fs');
+// Require dependencies
+var path = require('path');
+var express = require('express');
 
-// Loading the file index.html displayed to the client
-var server = http.createServer(function(req, res) {
-    fs.readFile('./index.html', 'utf-8', function(error, content) {
-        res.writeHead(200, {"Content-Type": "text/html"});
-        res.end(content);
-    });
+//var http = require('http');
+//var fs = require('fs');
+
+
+// Declare application parameters
+var PORT = process.env.PORT || 8080;
+var STATIC_ROOT = path.resolve(__dirname, './public');
+
+// Defining CORS middleware to enable CORS.
+// (should really be using "express-cors",
+// but this function is provided to show what is really going on when we say "we enable CORS")
+function cors(req, res, next){
+    res.header("Access-Control-Allow-Origin", "*");
+  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  	res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS,PUT");
+  	next();
+}
+
+
+// Instantiate an express.js application
+var app = express();
+
+// Configure the app to use a bunch of middlewares
+app.use(express.json());							// handles JSON payload
+app.use(express.urlencoded({ extended : true }));	// handles URL encoded payload
+app.use(cors);										// Enable CORS
+
+app.use('/', express.static(STATIC_ROOT));			// Serve STATIC_ROOT at URL "/" as a static resource
+
+
+app.post('/submit', function(request, response) {
+	
 });
 
-// Loading socket.io
-var io = require('socket.io').listen(server);
-
-io.sockets.on('connection', function (socket, username) {
-    // When the client connects, they are sent a message
-    socket.emit('message', 'You are connected!');
-    // The other clients are told that someone new has arrived
-    socket.broadcast.emit('message', 'Another client has just connected!');
-
-    // As soon as the username is received, it's stored as a session variable
-    socket.on('little_newbie', function(username) {
-        socket.username = username;
-    });
-
-    // When a "message" is received (click on the button), it's logged in the console
-    socket.on('message', function (message) {
-        // The username of the person who clicked is retrieved from the session variables
-        console.log(socket.username + ' is speaking to me! They\'re saying: ' + message);
-    });
+// Start listening on TCP port
+app.listen(PORT, function(){
+    console.log('Express.js server started, listening on PORT '+PORT);
 });
-
-
-server.listen(8080);
