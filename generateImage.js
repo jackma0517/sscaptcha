@@ -1,121 +1,216 @@
-var Jimp = require('jimp');
-// var bgGen = require('geopattern')
-// var svgexport = require('svgexport')
-// var crypto = require('crypto') // For that good cryptosecurity goodness
-var randomJpeg = require('random-jpeg')
-
-var background1 = './tmp.jpg';
-var icon = './icons/Airplane-75.png';
-var icon2 = './icons/Bear-18690.png';
-
-var label_list = []
-var label_filename = []
-var icon_count = 0
-var testOutput = "test.jpg";
+var Jimp = require('jimp'); // image compositing 
+var randomJpeg = require('random-jpeg') // bg-generation
 
 // Db Access
 var sqlite3 = require('sqlite3').verbose()
 require('dotenv').config({path:'./.env'})
 var db = new sqlite3.Database(process.env.SQLITE_DB)
 
-var iconList = {};
-
-//function to generate the board
-//list of icon should be:
-//{ icon_location_1: [x1,y1],
-//  icon_location_2: [x2,y2],
-//  icon_location_3: [x3,y3]......
-// }
-// taking minimum of 1 and maximum of 5
-// anything after the fifth one will be ignore
-
-function generateRandomIcons(max_icons) {
-    var sql_statement = 'select distinct label from icons order by random() limit ' + max_icons;
-    db.each(sql_statement, [], (err, row) => {
-        if (err) {
-            throw err;
+/**
+ * Obtains the filepath to an icons which matches the labels
+ * @param {sring array} labels 
+ */
+function getIcons(labels) {
+    return new Promise(async (resolve) => {
+        const icons = {}
+        for (var i = 0; i < labels.length; i++) {
+            icons[labels[i]] = await getIcon(labels[i]);
         }
-        label_list.push(row.label)
-    },
-    () => {
-        label_list.forEach((element) => {
-            var sql_get_filename = 'select filename from icons where label = ? order by random() limit 1'
-            db.get(sql_get_filename, [element], (err, row) => {
-                if (err) {
-                    throw err;
-                }
-                label_filename.push(row.filename);
-                icon_count++;
-                if (icon_count == max_icons) {
-                    generateIconList(max_icons)
-                }
+        resolve(icons);
+    })
+}
+
+/**
+ * Obtains the filepath to the icon which matches the label
+ * Helper function of getIcons
+ * @param {string} label 
+ */
+function getIcon(label) {
+    return new Promise(resolve => {
+        var sql_get_filename = 'select filename from icons where label = ? order by random() limit 1';
+        db.get(sql_get_filename, [label], (err, row) => {
+            if (err) {
+                throw err;
+            }
+            resolve(row.filename);
+        });
+    })
+}
+
+/**
+ * Generates num_labels random labels from the database
+ * @param {int} num_labels 
+ */
+function generateRandomLabels(num_labels) {
+    return new Promise((resolve) => {
+        const labels = [];
+        var sql_statement = 'select distinct label from icons order by random() limit ' + num_labels;
+        db.all(sql_statement, [], (err, rows) => {
+            if (err) {
+                throw err;
+            }
+            rows.forEach((row) => {
+                labels.push(row.label)
             });
+            resolve(labels)
         });
     });
 }
 
-function generateCoordinates() {
-    return [Math.random() * (1200), Math.random() * 900];
-}
-
-function generateIconList(max_icons) {
-    for (var i = 0; i < max_icons; i++) {
-        iconList['./icons/' + label_filename[i]] = generateCoordinates()
-    }
-    generateBoard(background1, testOutput, iconList)
-}
-
-function generateBackground() {
-    var imageOptions = {
-        colors: [[255,0,0], [0,255,0], [0,0,255]],
-        width: 1200,
+/**
+ * Generates a random background
+ * TODO: Make it nicer? 
+ */
+function generateRandomBackground() {
+    let tmp_bg_filename = 'tempbg.jpg'; //TODO: random hash?
+    // TODO: Why does it disrespect my colour choice :( 
+    var image_options = {
+        colors: [[255,0,0], [0,255,0],[0,0,255]],
+        width:1200,
         height: 900
     };
-    randomJpeg.writeJPEG(background1);
+    randomJpeg.writeJPEG(tmp_bg_filename, image_options);
+    return tmp_bg_filename;
 }
 
-var generateBoard = function(background, outputName, list){
-    console.log(list);
-    var imageArray = [background];
-    var keyList = Object.keys(list);
 
-    var tempLength = keyList.length;
+/**
+ */
 
-    if(tempLength > 5){
-        tempLength = 5;
+
+/**
+ * Acts to check whether two points intersects one anoter
+ * to prevent icons from overlapping one another
+ * TODO: This function assumes p2 as a point and not
+ *         as a "box", which makes geometry checking hurts. fix when I'm less sleepy
+ * @param {coordinate} p1 
+ * @param {coordinate} p2 
+ * @param {int} point_size 
+ */
+function checkIntersection(p1, p2, point_size) {
+    let edge = Math.floor(point_size/2);
+    let p1_x_min = p1[0] - edge;
+    let p1_x_max = p1[0] + edge;
+
+    let p1_y_min = p1[1] - edge;
+    let p1_y_max = p1[1] + edge;
+
+    if (p1_x_min < p2[0] 
+            && p2[0] < p1_x_max
+            && p1_y_min < p2[1]
+            && p2[1] < p1_y_max) {
+        return false;
     }
+    return true;
+}
 
-    for(var i = 0; i < tempLength; i++){
-        imageArray.push(Object.keys(list)[i]);
-    }
 
-    var jimpArray = [];
-
-    for(var i = 0; i < imageArray.length; i++){
-        jimpArray.push(Jimp.read(imageArray[i]));
-    }
-
-    Promise.all(jimpArray).then(function(data){
-        return Promise.all(jimpArray);
-    }).then(function(data) {
-        var back = data[0];
-        // resize the background to a fixed size
-        back.resize(1200,900);
-        for(var i = 1; i < data.length; i++){
-            var tempKey = keyList[i-1];
-            console.log("putting "+ tempKey + " at (" +
-                list[tempKey][0] + ', ' +
-                list[tempKey][1] +')');
-            back.composite(data[i],list[tempKey][0], list[tempKey][1]);
+/**
+ * Generates num_coords non-intersecting coordinates
+ * @param {*} min_x 
+ * @param {*} max_x 
+ * @param {*} min_y 
+ * @param {*} max_y 
+ * @param {*} point_size 
+ * @param {*} num_coords 
+ */
+function generateRandomNonIntersectingCoordinates(min_x, max_x, min_y, max_y, point_size, num_coords) {
+    let coords = [];
+    while (coords.length < num_coords) {
+        let potential_coord = [Math.random() * (max_x - min_x) + min_x, Math.random() * (max_y - min_y) + min_y];
+        let is_valid = true;
+        if (coords.length > 0) {
+            for (var i = 0; i < coords.length; i++) {
+                is_valid = checkIntersection(potential_coord, coords[i], point_size);
+                if (!is_valid) {
+                    break;
+                }
+            }
         }
-
-        //play around with the image
-
-        back.write(outputName);
-    }).catch(function(err){
-        console.log(err);
-    });
+        if (is_valid) {
+            coords.push(potential_coord);
+        }
+    }
+    return coords;
 }
 
-generateBackground()
-generateRandomIcons(5);
+/**
+ * Creates a board given a dictionary of labels and its corresponding
+ * icon image filename
+ * @param {string} board_filename 
+ * @param {label, filename dictionary} icons 
+ */
+async function constructBoardImage(board_filename, icons) {
+    let icon_coordinates = {}
+
+    let num_icons = Object.keys(icons).length;
+    let bg_name = generateRandomBackground();
+    let canvas = await Jimp.read(bg_name);
+    let coordinates = generateRandomNonIntersectingCoordinates(0, 1200-200, 0, 900-200, 400, num_icons);
+
+    var i = 0;
+    for (var icon in icons) {
+        let coordinate = [coordinates[i][0], coordinates[i][1]];
+        let icon_img = await Jimp.read('./icons/' + icons[icon]);
+        icon_img.resize(200, 200);
+        canvas.composite(icon_img, coordinate[0], coordinate[1]);
+        icon_coordinates[icon] = coordinate;
+        i++;
+    }
+    canvas.write(board_filename);
+    return icon_coordinates;
+}
+
+/* Simple get random action function */
+const instruction_array = ['MOVE', 'CLICK', 'AVOID']
+function getRandomInstruction() {
+    return instruction_array[Math.floor(Math.random() * instruction_array.length)];
+}
+
+/**
+ * Returns a dictionary of label to action
+ * @param {string array} labels 
+ */
+function assignInstructions(labels) {
+    let instruction_dict = {};
+    for (var i = 0; i < labels.length; i++) {
+        instruction_dict[labels[i]] = getRandomInstruction();
+    }
+    return instruction_dict;
+}
+
+/**
+ * This functions generate a board.
+ */
+async function generateBoard() {
+    try {
+        let board_filename = 'abc.jpg'; // todo: randomly gen
+        let solution = [{'action':[0,0]}, {'action':[1,1]}];
+        let labels = await generateRandomLabels(5);
+        let instructions = assignInstructions(labels);
+        let icons = await getIcons(labels);
+        let icon_coordinates = await constructBoardImage(board_filename, icons);
+        console.log(icon_coordinates);
+        return [board_filename, instructions, solution];
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+generateBoard()
+
+// MIND MAP:
+//
+// Solution:
+//     {
+//      {'action', (coordinates)},
+//      {'action', (coordinates)},
+//      {'action', (coordinates)}
+//     }
+//
+// generateBoard() (sync) --> returns ('.jpg', instruction, solution)
+//      await k = getLabels(num_labels) (async, db) --> returns (array of labels)
+//          getInstructions(label_array) (sync) -> returns dict{'label', 'instruction'}
+//          getIcons(label_array) (async) -> returns label_icons:dict{'label', 'icon'}
+//      await m = generateBoard(label_icons) (sync) -> returns (img, dict{'label', 'coordinate'})
+//      
