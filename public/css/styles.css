@@ -1,0 +1,36 @@
+body {
+	margin: 0 auto;
+	width: 1000px;
+}
+
+.welcome {
+    overflow: hidden;
+    text-align: center;
+    background-color: #E8E8E8;
+	clear: both;
+	font: 16px/24px Inconsolata, Arial, sans-serif;
+	padding-bottom: 15px;
+	padding-top: 1px;
+	position: relative;
+	text-align: center;
+	width: 1000px;
+}
+
+#captcha-image {
+    height: 650px;
+	padding-top: 0px;
+	padding-bottom: 0;
+	width: 1000px;
+}
+
+#poke {
+    background-color: #4D94FF;
+	border: none;
+	color: #FFFFFF;
+	float: right;
+	font: 18px/24px Inconsolata, Arial;
+}
+#poke:hover {
+	background-color: #003D99;
+	border: none;
+}
