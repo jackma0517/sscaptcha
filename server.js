@@ -34,6 +34,7 @@ app.use('/', express.static(STATIC_ROOT));			// Serve STATIC_ROOT at URL "/" as 
 
 app.post('/submit', function(request, response) {
 	console.log("hello " + request.body.name);
+	console.log(request.body.mouseMovements);
 	var boop = JSON.stringify({boop: request.body.name + " has booped the server!"})
 	response.send(boop);
 });

@@ -2,8 +2,7 @@ body {
 	margin: 0 auto;
 	width: 1000px;
 }
-
-.welcome {
+.banner {
     overflow: hidden;
     text-align: center;
     background-color: #E8E8E8;
@@ -15,14 +14,12 @@ body {
 	text-align: center;
 	width: 1000px;
 }
-
 #captcha-image {
-    height: 650px;
+    height: 600px;
 	padding-top: 0px;
 	padding-bottom: 0;
 	width: 1000px;
 }
-
 #submit-btn {
     background-color: #4D94FF;
 	border: none;
@@ -34,7 +31,25 @@ body {
 	background-color: #003D99;
 	border: none;
 }
-
 #submit-btn:active {
 	transform: translateY(4px);
   }
+
+/* Recoding Mouse Movements*/
+	div.cursor {
+		position: absolute;
+		width: 32px;
+		top: -100%;
+		height: 32px;
+		background-image: url(http://cursor.in/assets/cursor.svg);
+  	}
+  
+  	div.obstacle {
+		width: 10px;
+		height: 10px;
+		background: red;
+		left: 50%;
+		position: absolute;
+		top: 50%;
+  	}
+/* ------------------ */

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <link rel="stylesheet" href="css/styles.css">
         <script src="client.js"></script>
     </head>
     <body>
-        <div class = "welcome">
-            <h1>No OnE iS AroUNd tO hELp</h1>
+        <div class = "banner">
+            <h1>SSCaptcha</h1>
         </div>
         <div class = "captcha">
             <img id = "captcha-image" src = "./images/BobCat.gif" alt = "Meow">
@@ -14,6 +15,13 @@
 
         <button id="submit-btn">Submit Captcha </button>
 
+    <!-- Record Mouse Movements -->
+        <div class="cursor"></div>
+        <button class="p" onclick="recorder.playback()">stop & play</button>
+        <button class="r" onclick="recorder.record()">record</button>
+
+        <div class="obstacle"></div>
+    <!-- ---------------------- -->
     </body>
 </html>
 
