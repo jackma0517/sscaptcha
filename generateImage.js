@@ -69,7 +69,7 @@ function generateRandomBackground() {
         width:1200,
         height: 900
     };
-    randomJpeg.writeJPEG(tmp_bg_filename, image_options);
+    randomJpeg.writeJPEGSync(tmp_bg_filename, image_options);
     return tmp_bg_filename;
 }
 
