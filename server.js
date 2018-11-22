@@ -2,6 +2,7 @@
 var path = require('path');
 var express = require('express');
 
+var generateImage = require('./generateImage');
 //var http = require('http');
 //var fs = require('fs');
 
@@ -31,10 +32,17 @@ app.use(cors);										// Enable CORS
 
 app.use('/', express.static(STATIC_ROOT));			// Serve STATIC_ROOT at URL "/" as a static resource
 
+app.get('/captcha', function(request, response){
+	//var captcha = generateImage.generateBoard();
+	console.log(captcha);
+});
 
 app.post('/submit', function(request, response) {
 	console.log("hello " + request.body.name);
+	console.log("Mouse Movements: ");
 	console.log(request.body.mouseMovements);
+	console.log("Mouse Clicks: ");
+	console.log(request.body.mouseClicks);
 	var boop = JSON.stringify({boop: request.body.name + " has booped the server!"})
 	response.send(boop);
 });

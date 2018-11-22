@@ -3,7 +3,7 @@
  * Sorry this is so unorganized and inconsistent D; it hurts me too
  */
 var mouseMovementArray = [];
-
+var mouseClicksArray = [];
 
 
 var recorder = {
@@ -13,7 +13,11 @@ var recorder = {
 
       $(window).mousemove(function(e) {
         if(that.state == 1) {
-          that.frames.push([e.clientX, e.clientY]);
+            //hardcoding value to be within the captcha image
+            if((e.clientX > 190 && e.clientX < 1170) && (e.clientY > 88 && e.clientY < 660)){
+                that.frames.push([e.clientX, e.clientY]);
+                mouseMovementArray.push([e.clientX, e.clientY]);   
+            }
         }
       });
     },
@@ -39,10 +43,6 @@ var recorder = {
       that.endTime = new Date().getTime()/1000;
       that.time = (that.endTime - that.startTime) * 3;
 
-      //super hacky and dumb idk
-      mouseMovementArray = that.frames;
-      console.log(mouseMovementArray);
-
       $(that.frames).each(function(i, move) {
 
         setTimeout(function() {
@@ -62,7 +62,7 @@ var recorder = {
 
 };
 
-recorder.state = 2; //1 = Recording | 2 = Stopped
+recorder.state = 1; //1 = Recording | 2 = Stopped
 recorder.frames = [];
 
 /*
@@ -89,10 +89,10 @@ function ajaxPost(url, data) {
       var status = xhttp.status;
       if (status == 200) { /* Success */
         console.log("POST success");
-        var responseObj = JSON.parse(xhttp.responseText);
+        //var responseObj = JSON.parse(xhttp.responseText);
+        //var message = responseObj.boop;
+        //alert(message);
 
-        var message = responseObj.boop;
-        alert(message);
       } else if (status.toString().charAt(0) == 4 || status.toString().charAt(0) == 5) {
         /* Client or network error */
         console.log("POST failure");
@@ -101,22 +101,61 @@ function ajaxPost(url, data) {
     xhttp.send(payload);
   }
 
+  /*
+ * AJAX Get Request
+ */
+function ajaxGet(url) {
+    var xhttp = new XMLHttpRequest();
+  
+    xhttp.open('GET', url, true);
+    xhttp.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
+  
+    xhttp.onload = function() {
+      var status = xhttp.status;
+      if (status == 200) { /* Success */
+        console.log("GET success");
+        //var responseObj = JSON.parse(xhttp.responseText);
+
+        //var message = responseObj.boop;
+        //alert(message);
+      } else if (status.toString().charAt(0) == 4 || status.toString().charAt(0) == 5) {
+        /* Client or network error */
+        console.log("GET failure");
+      }  
+    }
+    xhttp.send(payload);
+  }
 
 //called after all HTML/CSS/Scripts/DOM are loaded
 window.onload = function () {
 
     var username = prompt('What\'s your username?');
+    //starts recording on load
+    recorder.record();
 
     document.getElementById('submit-btn').addEventListener('click', function(){
         //socket.emit('message', 'Hi server, how are you?');
         if(mouseMovementArray.length == 0){
             alert("Please record mouse movements before submitting captcha");
         } else {
+            //playback mouse movements to user for better usability?
+            recorder.playback();
             var data = {
                 name: username, 
-                mouseMovements: mouseMovementArray
+                mouseMovements: mouseMovementArray,
+                mouseClicks: mouseClicksArray
             };
             ajaxPost('http://localhost:8080' + '/submit', data);
         }
+    })
+
+    document.getElementById('get-captcha').addEventListener('click', function(){
+        ajaxGet('http://localhost:8080' + '/captcha');
+    })
+
+    document.getElementById("captcha-image").addEventListener('click', function(e){
+        var x = e.pageX - this.offsetLeft;
+        var y = e.pageY - this.offsetTop;
+        mouseClicksArray.push([x,y]);
     })
   }
