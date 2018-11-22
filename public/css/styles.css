@@ -8,30 +8,49 @@ body {
     background-color: #E8E8E8;
 	clear: both;
 	font: 16px/24px Inconsolata, Arial, sans-serif;
-	padding-bottom: 15px;
+	padding-bottom: 5px;
 	padding-top: 1px;
 	position: relative;
-	text-align: center;
 	width: 1000px;
+}
+.instructions {
+	font: 13px Inconsolata, Arial, sans-serif;
+	overflow: hidden;
+	clear: both;
+	position: relative;
+	background-color: #E8E8E8;
+	width: 1000px;
+	padding-bottom: 5px;
+	padding-top: 1px;
+	text-align: center;
+}
+.textbox {
+	text-align: left;
+	margin-left: 25%;
 }
 #captcha-image {
-    height: 600px;
+    height: 500px;
 	padding-top: 0px;
 	padding-bottom: 0;
-	width: 1000px;
+	width: 800px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 #submit-btn {
+	float: right;
+}
+.blue-button {
     background-color: #4D94FF;
 	border: none;
 	color: #FFFFFF;
-	float: right;
-	font: 18px/24px Inconsolata, Arial;
+	font: 18px Inconsolata, Arial;
 }
-#submit-btn:hover {
+.blue-button:hover {
 	background-color: #003D99;
 	border: none;
 }
-#submit-btn:active {
+.blue-button:active {
 	transform: translateY(4px);
   }
 

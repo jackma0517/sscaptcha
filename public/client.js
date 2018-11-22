@@ -129,7 +129,7 @@ function ajaxGet(url) {
 //called after all HTML/CSS/Scripts/DOM are loaded
 window.onload = function () {
 
-    var username = prompt('What\'s your username?');
+    //var username = prompt('What\'s your username?');
     //starts recording on load
     recorder.record();
 
@@ -141,7 +141,6 @@ window.onload = function () {
             //playback mouse movements to user for better usability?
             recorder.playback();
             var data = {
-                name: username, 
                 mouseMovements: mouseMovementArray,
                 mouseClicks: mouseClicksArray
             };
