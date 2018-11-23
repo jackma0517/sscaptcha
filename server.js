@@ -50,13 +50,19 @@ app.get('/captcha', async function(request, response){
 });
 
 app.post('/submit', function(request, response) {
-	console.log("hello " + request.body.name);
 	console.log("Mouse Movements: ");
 	console.log(request.body.mouseMovements);
 	console.log("Mouse Clicks: ");
 	console.log(request.body.mouseClicks);
-	var boop = JSON.stringify({boop: request.body.name + " has booped the server!"})
-	response.send(boop);
+	response.status(200).send();
+	//var boop = JSON.stringify({boop: request.body.name + " has booped the server!"})
+	//response.send(boop);
+});
+
+app.post('/submitSurvey', function(request, response) {
+	console.log("Survey Results: ");
+	console.log(request.body.surveyResults);
+	response.status(200).send();
 });
 
 // Start listening on TCP port
