@@ -123,7 +123,7 @@ function ajaxGet(url) {
         console.log("GET failure");
       }  
     }
-    xhttp.send(payload);
+    xhttp.send();
   }
 
 //called after all HTML/CSS/Scripts/DOM are loaded
@@ -149,6 +149,7 @@ window.onload = function () {
     })
 
     document.getElementById('get-captcha').addEventListener('click', function(){
+        console.log('Client requesting CAPTCHA');
         ajaxGet('http://localhost:8080' + '/captcha');
     })
 

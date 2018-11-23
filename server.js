@@ -32,9 +32,12 @@ app.use(cors);										// Enable CORS
 
 app.use('/', express.static(STATIC_ROOT));			// Serve STATIC_ROOT at URL "/" as a static resource
 
-app.get('/captcha', function(request, response){
-	//var captcha = generateImage.generateBoard();
-	console.log(captcha);
+app.get('/captcha', async function(request, response){
+	console.log('Client requesting captcha');
+	var [board_filename, instructions, solution] = await generateImage.generateBoard();
+	console.log(board_filename);
+	console.log(instructions);
+	console.log(solution);
 });
 
 app.post('/submit', function(request, response) {

@@ -169,7 +169,7 @@ function getRandomInstruction() {
 
 /**
  * Returns a dictionary of label to action
- * @param {string array} labels 
+ * @param {string_array} labels 
  */
 function assignInstructions(labels) {
     let instruction_dict = {};
@@ -185,19 +185,25 @@ function assignInstructions(labels) {
 async function generateBoard() {
     try {
         let board_filename = 'abc.jpg'; // todo: randomly gen
-        let solution = [{'action':[0,0]}, {'action':[1,1]}];
+        let solution = [];
         let labels = await generateRandomLabels(5);
         let instructions = assignInstructions(labels);
         let icons = await getIcons(labels);
         let icon_coordinates = await constructBoardImage(board_filename, icons);
-        console.log(icon_coordinates);
+        for (var i = 0; i < labels.length; i++) {
+            solution[i] = [instructions[labels[i]], icon_coordinates[labels[i]]]
+        }
         return [board_filename, instructions, solution];
     } catch (error) {
         console.error(error)
     }
 }
 
-generateBoard()
+module.exports = {
+    generateBoard: generateBoard
+}
+
+//generateBoard()
 
 // MIND MAP:
 //
