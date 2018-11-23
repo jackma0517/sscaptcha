@@ -4,7 +4,7 @@ var express = require('express');
 
 var generateImage = require('./generateImage');
 //var http = require('http');
-//var fs = require('fs');
+var fs = require('fs'); // for base64 image
 
 
 // Declare application parameters
@@ -34,10 +34,8 @@ app.use('/', express.static(STATIC_ROOT));			// Serve STATIC_ROOT at URL "/" as 
 
 app.get('/captcha', async function(request, response){
 	console.log('Client requesting captcha');
-	var [board_filename, instructions, solution] = await generateImage.generateBoard();
-	console.log(board_filename);
-	console.log(instructions);
-	console.log(solution);
+	var [boardBase64, instructions, solution] = await generateImage.generateBoard();
+	response.send(JSON.stringify(boardBase64));
 });
 
 app.post('/submit', function(request, response) {

@@ -109,11 +109,16 @@ function ajaxGet(url) {
   
     xhttp.open('GET', url, true);
     xhttp.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
+    console.log('Sending an AJAXGet to: ' + url);
   
     xhttp.onload = function() {
       var status = xhttp.status;
       if (status == 200) { /* Success */
         console.log("GET success");
+        var bg_img = JSON.parse(xhttp.responseText)
+        document.getElementById('captcha-image').setAttribute(
+          'src', bg_img
+        );
         //var responseObj = JSON.parse(xhttp.responseText);
 
         //var message = responseObj.boop;

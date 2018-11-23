@@ -1,5 +1,6 @@
 var Jimp = require('jimp'); // image compositing 
 var randomJpeg = require('random-jpeg') // bg-generation
+var fs = require('fs');
 
 // Db Access
 var sqlite3 = require('sqlite3').verbose()
@@ -158,7 +159,8 @@ async function constructBoardImage(board_filename, icons) {
         i++;
     }
     canvas.write(board_filename);
-    return icon_coordinates;
+    let b64_img = await canvas.getBase64Async(Jimp.AUTO)
+    return [icon_coordinates, b64_img];
 }
 
 /* Simple get random action function */
@@ -189,11 +191,11 @@ async function generateBoard() {
         let labels = await generateRandomLabels(5);
         let instructions = assignInstructions(labels);
         let icons = await getIcons(labels);
-        let icon_coordinates = await constructBoardImage(board_filename, icons);
+        let [icon_coordinates, b64_img] = await constructBoardImage(board_filename, icons);
         for (var i = 0; i < labels.length; i++) {
             solution[i] = [instructions[labels[i]], icon_coordinates[labels[i]]]
         }
-        return [board_filename, instructions, solution];
+        return [b64_img, instructions, solution];
     } catch (error) {
         console.error(error)
     }
