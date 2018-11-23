@@ -4,6 +4,11 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <link rel="stylesheet" href="css/styles.css">
         <script src="client.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link href="https://surveyjs.azureedge.net/1.0.56/survey.css" type="text/css" rel="stylesheet" />
+        <script src="https://surveyjs.azureedge.net/1.0.56/survey.jquery.min.js"></script>
+
     </head>
     <body>
         <div class = "banner">
@@ -18,6 +23,7 @@
             </div>
         </div>
         <button class = "blue-button" id="get-captcha">Get New Captcha </button>
+        <button class = "blue-button" id = "survey-btn">Survey</button>
         <div class = "captcha">
             <img id = "captcha-image" src = "./images/BobCat.gif" alt = "Meow">
         </div>
@@ -32,6 +38,99 @@
     -->
 
         <div class="obstacle"></div>
+    <!-- ---------------------- -->
+    
+    <!--------- Survey --------->
+    <div id = "modal">
+        <div id = "modal-content">
+            <div class = "modal-header">
+                <button class = "blue-button" id = "survey-close-btn">Close</button>
+            </div>
+            <div id="surveyContainer">
+                <p>            
+                1. After how many attempts did you need to complete the test? <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="num-attempts"> 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="num-attempts"> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="num-attempts"> 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="num-attempts"> 4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="num-attempts"> 5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="num-attempts"> More than 5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="num-attempts"> Couldn't Solve<br><br>
+
+                2. How much time did you spend in order to solve the CAPTCHA? <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="solve-time"> less than 10 seconds &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="solve-time"> 10 to 30 seconds &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="solve-time"> 30 seconds to 1 min &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="solve-time"> 1 min to 2 min &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <br> &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="solve-time"> More than 2 min<br><br>
+
+                3. Would you willing to use this CAPTCHA again? <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="solve-again"> Yes &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="solve-again"> No<br><br>
+
+                4. How easily could you recognise the shape(s)? <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="recognize-shapes"> Very Easily &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="recognize-shapes"> Easily &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="recognize-shapes"> Not Easily<br><br>
+
+                5. What was the level of ambiguity in recognising of the shapes?  <br>
+                &nbsp;&nbsp;&nbsp;1 being not ambiguous and 10 being very ambiguous <br>
+                &nbsp;&nbsp;&nbsp;Ambiguous: unclear or inexact  <br> 
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="ambiguity-level"> 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="ambiguity-level"> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="ambiguity-level"> 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="ambiguity-level"> 4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="ambiguity-level"> 5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="ambiguity-level"> 6 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="ambiguity-level"> 7 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="ambiguity-level"> 8 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="ambiguity-level"> 9 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="ambiguity-level"> 10<br><br>
+
+                6. How do you rate the CAPTCHA in terms of difficulty? <br>
+                &nbsp;&nbsp;&nbsp;1 being not difficult and 10 being very difficult <br> 
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="difficulty-level"> 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="difficulty-level"> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="difficulty-level"> 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="difficulty-level"> 4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="difficulty-level"> 5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="difficulty-level"> 6 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="difficulty-level"> 7 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="difficulty-level"> 8 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="difficulty-level"> 9 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="difficulty-level"> 10<br><br>
+
+                7. What is your opinion about the size of the shape(s) in this CAPTCHA? <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="shape-sizes"> Too Small &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="shape-sizes"> Just Right &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="shape-sizes"> Too Big<br><br>
+
+                8. How difficult did you find the CAPTCHA application to work/interact with? <br>
+                &nbsp;&nbsp;&nbsp;1 being not difficult and 10 being very difficult <br> 
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="interactive-difficulty"> 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="interactive-difficulty"> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="interactive-difficulty"> 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="interactive-difficulty"> 4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="interactive-difficulty"> 5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="interactive-difficulty"> 6 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="interactive-difficulty"> 7 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="interactive-difficulty"> 8 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="interactive-difficulty"> 9 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="interactive-difficulty"> 10<br><br>
+                </p>
+                <button class = "blue-button" id = "survey-submit-btn">Submit</button>
+            </div>
+        </div>
+      </div>
     <!-- ---------------------- -->
     </body>
 </html>

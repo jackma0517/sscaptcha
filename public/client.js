@@ -89,6 +89,7 @@ function ajaxPost(url, data) {
       var status = xhttp.status;
       if (status == 200) { /* Success */
         console.log("POST success");
+        showSurvey();
         //var responseObj = JSON.parse(xhttp.responseText);
         //var message = responseObj.boop;
         //alert(message);
@@ -131,6 +132,23 @@ function ajaxGet(url) {
     xhttp.send();
   }
 
+  function showSurvey() {
+    var modal = document.getElementById("modal");
+    modal.style.display = "flex";
+
+    $(document).keydown(function (e) {
+      if (e.keyCode == 27) { //esc button
+        $("#modal").hide();
+      }
+    });
+
+  }
+
+  function hideSurvey() {
+    var modal = document.getElementById("modal");
+    modal.style.display = "none";
+  }
+
 //called after all HTML/CSS/Scripts/DOM are loaded
 window.onload = function () {
 
@@ -163,4 +181,12 @@ window.onload = function () {
         var y = e.pageY - this.offsetTop;
         mouseClicksArray.push([x,y]);
     })
+
+    document.getElementById("survey-btn").addEventListener('click', function(){
+      showSurvey();
+    })
+    document.getElementById("survey-close-btn").addEventListener('click', function(){
+      hideSurvey();
+    })
   }
+
