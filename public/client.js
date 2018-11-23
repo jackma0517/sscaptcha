@@ -126,7 +126,7 @@ function ajaxGet(url) {
           'src', payload[0]
         );
         console.log('Instructions');
-        document.getElementById('inttruction-textbox')[0].textContent = payload[1].toString();
+        document.getElementById('instruction-textbox').textContent = payload[1].toString();
         //var responseObj = JSON.parse(xhttp.responseText);
 
         //var message = responseObj.boop;

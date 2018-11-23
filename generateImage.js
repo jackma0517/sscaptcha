@@ -258,7 +258,7 @@ async function generateBoard() {
         }
         return [b64_img, instruction_sentences, solution];
     } catch (error) {
-        console.error(error
+        console.error(error)
     }
 }
 
