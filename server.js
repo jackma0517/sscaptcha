@@ -21,6 +21,16 @@ function cors(req, res, next){
   	next();
 }
 
+function create_instruction(icon, action) {
+}
+
+function interpret_instructions(instructions) {
+	for (var instruction in instructions) {
+		console.log(instruction);
+		console.log(instructions[instruction]);
+	}
+	return 0;
+}
 
 // Instantiate an express.js application
 var app = express();
@@ -35,7 +45,8 @@ app.use('/', express.static(STATIC_ROOT));			// Serve STATIC_ROOT at URL "/" as 
 app.get('/captcha', async function(request, response){
 	console.log('Client requesting captcha');
 	var [boardBase64, instructions, solution] = await generateImage.generateBoard();
-	response.send(JSON.stringify(boardBase64));
+	var instruction_string = interpret_instructions(instructions);
+	response.send(JSON.stringify([boardBase64, instructions]));
 });
 
 app.post('/submit', function(request, response) {

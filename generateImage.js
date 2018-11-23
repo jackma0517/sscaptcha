@@ -164,7 +164,9 @@ async function constructBoardImage(board_filename, icons) {
 }
 
 /* Simple get random action function */
-const instruction_array = ['MOVE', 'CLICK', 'AVOID']
+//const instruction_array = ['MOVE', 'CLICK', 'AVOID']
+// Only send click instructions for now
+const instruction_array = ['CLICK']
 function getRandomInstruction() {
     return instruction_array[Math.floor(Math.random() * instruction_array.length)];
 }
@@ -181,6 +183,63 @@ function assignInstructions(labels) {
     return instruction_dict;
 }
 
+
+/**
+ * Allows for String.Format to replace values in functions
+ * from: https://stackoverflow.com/questions/2534803/use-of-string-format-in-javascript
+ */
+function strFormat() {
+    var s = arguments[0];
+    for (var i = 0; i < arguments.length - 1; i++) {       
+        var reg = new RegExp("\\{" + i + "\\}", "gm");             
+        s = s.replace(reg, arguments[i + 1]);
+    }
+    return s;
+}
+
+const MOVE_SENTENCES = [
+    'Move your mouse to the {label}',
+    'Drag your mouse to the {label}',
+    'To {label}, you should slide your mouse', // Yoda is that you?
+    'Drag your cursor to the {label}',
+    'Move your cursor to the {label}',
+];
+
+const CLICK_SENTENCES = [
+    'Click on the {label}',
+    'Select the {label}',
+    'Press the {label}',
+]
+
+const AVOID_SENTENCES = [
+    'Do not touch the {label}',
+    'Avoid the {label} at all costs',
+    'Make sure the mouse does not touch the {label}'
+]
+
+/**
+ * Returns a string corresponding to the label and the 
+ * action
+ * @param {string} label
+ * @param {sring} action 
+ * TODO: Randomify the strings
+ */
+function instruction_to_sentence(label, action) {
+    let sentence = '';
+	switch(action) {
+        case "MOVE":
+            sentence = (MOVE_SENTENCES[Math.floor(Math.random() * MOVE_SENTENCES.length)]).replace('{label}', label);
+			break;
+		case "CLICK":
+            sentence = (CLICK_SENTENCES[Math.floor(Math.random() * CLICK_SENTENCES.length)]).replace('{label}', label);
+			break;
+		case "AVOID":
+            sentence = (AVOID_SENTENCES[Math.floor(Math.random() * AVOID_SENTENCES.length)]).replace('{label}', label);
+			break;
+    }
+    return sentence;
+}
+
 /**
  * This functions generate a board.
  */
@@ -192,12 +251,14 @@ async function generateBoard() {
         let instructions = assignInstructions(labels);
         let icons = await getIcons(labels);
         let [icon_coordinates, b64_img] = await constructBoardImage(board_filename, icons);
+        let instruction_sentences = []
         for (var i = 0; i < labels.length; i++) {
             solution[i] = [instructions[labels[i]], icon_coordinates[labels[i]]]
+            instruction_sentences[i] = instruction_to_sentence(labels[i], instructions[labels[i]]);
         }
-        return [b64_img, instructions, solution];
+        return [b64_img, instruction_sentences, solution];
     } catch (error) {
-        console.error(error)
+        console.error(error
     }
 }
 
@@ -205,7 +266,7 @@ module.exports = {
     generateBoard: generateBoard
 }
 
-//generateBoard()
+generateBoard()
 
 // MIND MAP:
 //
