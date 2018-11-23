@@ -121,10 +121,12 @@ function ajaxGet(url) {
       var status = xhttp.status;
       if (status == 200) { /* Success */
         console.log("GET success");
-        var bg_img = JSON.parse(xhttp.responseText)
+        var payload = JSON.parse(xhttp.responseText)
         document.getElementById('captcha-image').setAttribute(
-          'src', bg_img
+          'src', payload[0]
         );
+        console.log('Instructions');
+        document.getElementById('instruction-textbox').textContent = payload[1].toString();
         //var responseObj = JSON.parse(xhttp.responseText);
 
         //var message = responseObj.boop;
