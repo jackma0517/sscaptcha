@@ -1,5 +1,7 @@
 var Jimp = require('jimp'); // image compositing 
 var randomJpeg = require('random-jpeg') // bg-generation
+var geoPattern = require('geopattern') // bg-generation v2
+var trianglify = require('trianglify') //bg-generation v3
 var fs = require('fs');
 var uuid = require('uuid/v4');
 
@@ -75,6 +77,16 @@ function generateRandomBackground() {
     return tmp_bg_filename;
 }
 
+/**
+ * Returns a random background encoded in base64
+ */
+function generateRandomBackgroundB64() {
+    // let background = geoPattern.generate(uuid());
+    // return background.toDataUri();
+    let bg = trianglify({width: 1200, height: 900});
+    return bg.png();
+}
+
 
 /**
  * Acts to check whether two points intersects one anoter
@@ -140,10 +152,12 @@ function generateRandomNonIntersectingCoordinates(min_x, max_x, min_y, max_y, po
  */
 async function constructBoardImage(board_filename, icons) {
     let icon_coordinates = {}
-
     let num_icons = Object.keys(icons).length;
-    let bg_name = generateRandomBackground();
-    let canvas = await Jimp.read(bg_name);
+    let bg64 = generateRandomBackgroundB64();
+    bg64 = bg64.replace('data:image/png;base64,', '');
+    //bg64 = bg64.replace('data:image/svg+xml;base64,', '');
+    let buf = new Buffer(bg64, 'base64');
+    let canvas = await Jimp.read(buf);
     let coordinates = generateRandomNonIntersectingCoordinates(0, 1200-200, 0, 900-200, 400, num_icons);
 
     var i = 0;
