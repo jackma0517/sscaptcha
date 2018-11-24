@@ -9,6 +9,11 @@ var sqlite3 = require('sqlite3').verbose()
 require('dotenv').config({path:'./.env'})
 var db = new sqlite3.Database(process.env.SQLITE_DB)
 
+// Image size constants
+const image_width = 800;
+const image_height = 500;
+const icon_size = 100;
+
 /**
  * Obtains the filepath to an icons which matches the labels
  * @param {sring array} labels 
@@ -69,8 +74,8 @@ function generateRandomBackground() {
     // TODO: Why does it disrespect my colour choice :( 
     var image_options = {
         colors: [[255,0,0], [0,255,0],[0,0,255]],
-        width:1200,
-        height: 900
+        width:image_width,
+        height:image_height
     };
     randomJpeg.writeJPEGSync(tmp_bg_filename, image_options);
     return tmp_bg_filename;
@@ -80,7 +85,7 @@ function generateRandomBackground() {
  * Returns a random background encoded in base64
  */
 function generateRandomBackgroundB64() {
-    let bg = trianglify({width: 1200, height: 900});
+    let bg = trianglify({width: image_width, height: image_height});
     return bg.png().replace('data:image/png;base64,', '');
 }
 
@@ -153,6 +158,7 @@ function getRandom8BitValue() {
  * @param {JIMP_img} icon_img 
  */
 function processIcon(icon_img) {
+    icon_img.resize(icon_size, Jimp.AUTO);
     icon_img.rotate((Math.random() * 90) - 45);     // rotate the image b/w -45 to 45 degrees
     icon_img.color([
         {apply: 'red', params: [getRandom8BitValue()]},
@@ -174,7 +180,7 @@ async function constructBoardImage(board_filename, icons) {
     //bg64 = bg64.replace('data:image/svg+xml;base64,', '');
     let buf = new Buffer(bg64, 'base64');
     let canvas = await Jimp.read(buf);
-    let coordinates = generateRandomNonIntersectingCoordinates(0, 1200-200, 0, 900-200, 400, num_icons);
+    let coordinates = generateRandomNonIntersectingCoordinates(0, image_width-icon_size, 0, image_height-icon_size, 2*icon_size, num_icons);
 
     var i = 0;
     for (var icon in icons) {
@@ -186,6 +192,7 @@ async function constructBoardImage(board_filename, icons) {
         i++;
         //break;
     }
+
     canvas.write(board_filename);
     let b64_img = await canvas.getBase64Async(Jimp.AUTO)
     return [icon_coordinates, b64_img];
