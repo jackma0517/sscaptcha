@@ -18,7 +18,8 @@ const image_height = 500;
 const icon_size = 100;
 
 // Image colour constants
-// adapted to be colourblind safe
+// Suppoesd to be colourblind safe
+// but doesn't look too nice :<
 const PALETTES = [
     ['#8c510a','#d8b365','#f6e8c3','#c7eae5','#5ab4ac','#01665e'],
     ['#c51b7d','#e9a3c9','#fde0ef','#e6f5d0','#a1d76a','#4d9221'],
@@ -27,6 +28,45 @@ const PALETTES = [
     ['#b2182b','#ef8a62','#fddbc7','#d1e5f0','#67a9cf','#2166ac'],
     ['#d73027','#fc8d59','#fee090','#e0f3f8','#91bfdb','#4575b4']
 ];
+
+// Easy on the eyes contrasts
+const PALETTES_CONTRAST = [
+    ['#F46036', '#5B85AA', '#414770', '#372248', '#171123'],
+    ['#c7e8f3','#bf9aca', '#8e4162', '#41393e', '#eda2c0'],
+    ['#e1dd8f','#e0777d', '#8e4162', '#41393e', '#4c86a8'],
+    ['#d1d1d1','#e0777d','#8e4162','#41393e','#720c26'],
+    ['#a2999e','#d0d6b5','#f9b5ac','#ee7674','#6a56ff'],
+    ['#edffec','#13293d','#006494','#247ba0','#1b98e0']
+];
+
+/**
+ * Extends the palette into num objects
+ * to satisfy the guarantee that we'll have enough
+ * colours for all the icons
+ */
+function extendPalette(palette, num) {
+    let p = [];
+    for (var i = 0; i < num; i++) {
+        p.push(palette[Math.floor(Math.random()*palette.length)]);
+    }
+    return p
+}
+
+/**
+ * Returns a palette array,
+ * the background is the 0-th element
+ */
+function getPalette() {
+    // return PALETTES[Math.floor(Math.random() * PALETTES.length)];
+    let palette = [];
+    let palette_raw = PALETTES_CONTRAST[Math.floor(Math.random() * PALETTES_CONTRAST.length)];
+    palette[0] = palette_raw[0];
+    palette_raw.shift();
+    let extended_palette = extendPalette(palette_raw, 5);
+    palette = palette.concat(extended_palette);
+    console.log(palette)
+    return palette;
+}
 
 /**
  * Obtains the filepath to an icons which matches the labels
@@ -119,7 +159,9 @@ const PLASMA_PARAMS = ['black-black', 'grey-grey', 'white-white', 'tomato-tomato
  */
 function generateRandomBackgroundv4(color) {
     return new Promise((resolve) => {
-        let random_palette = PLASMA_PARAMS[Math.floor(Math.random() * PLASMA_PARAMS.length)];
+        if (!color) {
+            color = PLASMA_PARAMS[Math.floor(Math.random() * PLASMA_PARAMS.length)];
+        }
         let plasma_param = 'plasma:{param}'.replace('{param}', color + '-' + color);
         console.log(plasma_param);
         gm(image_width, image_height)
@@ -235,12 +277,13 @@ function shuffleArray(array) {
  * @param {label, filename dictionary} icons 
  */
 async function constructBoardImage(board_filename, icons) {
-    let palette = PALETTES[Math.floor(Math.random() * PALETTES.length)];
-    // TODO: Randomize color order in palette
+    let palette = getPalette(); 
+    let bg_color = palette[0];
+    palette.shift();
     shuffleArray(palette);
     let icon_coordinates = {}
     let num_icons = Object.keys(icons).length;
-    let bg64 = await generateRandomBackgroundv4(palette[0]);//generateRandomBackgroundB64();
+    let bg64 = await generateRandomBackgroundv4(bg_color);//generateRandomBackgroundB64();
     //bg64 = bg64.replace('data:image/svg+xml;base64,', '');
     //let buf = new Buffer(bg64, 'base64');
     let canvas = await Jimp.read(bg64);
