@@ -180,7 +180,7 @@ async function constructBoardImage(board_filename, icons) {
     //bg64 = bg64.replace('data:image/svg+xml;base64,', '');
     let buf = new Buffer(bg64, 'base64');
     let canvas = await Jimp.read(buf);
-    let coordinates = generateRandomNonIntersectingCoordinates(0, image_width-icon_size, 0, image_height-icon_size, 2*icon_size, num_icons);
+    let coordinates = generateRandomNonIntersectingCoordinates(0, image_width-icon_size, 0, image_height-icon_size, 4*icon_size, num_icons);
 
     var i = 0;
     for (var icon in icons) {
