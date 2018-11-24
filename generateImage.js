@@ -1,6 +1,5 @@
 var Jimp = require('jimp'); // image compositing 
 var randomJpeg = require('random-jpeg') // bg-generation
-var geoPattern = require('geopattern') // bg-generation v2
 var trianglify = require('trianglify') //bg-generation v3
 var fs = require('fs');
 var uuid = require('uuid/v4');
@@ -81,10 +80,8 @@ function generateRandomBackground() {
  * Returns a random background encoded in base64
  */
 function generateRandomBackgroundB64() {
-    // let background = geoPattern.generate(uuid());
-    // return background.toDataUri();
     let bg = trianglify({width: 1200, height: 900});
-    return bg.png();
+    return bg.png().replace('data:image/png;base64,', '');
 }
 
 
@@ -154,7 +151,6 @@ async function constructBoardImage(board_filename, icons) {
     let icon_coordinates = {}
     let num_icons = Object.keys(icons).length;
     let bg64 = generateRandomBackgroundB64();
-    bg64 = bg64.replace('data:image/png;base64,', '');
     //bg64 = bg64.replace('data:image/svg+xml;base64,', '');
     let buf = new Buffer(bg64, 'base64');
     let canvas = await Jimp.read(buf);
