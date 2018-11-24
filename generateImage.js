@@ -1,6 +1,7 @@
 var Jimp = require('jimp'); // image compositing 
 var randomJpeg = require('random-jpeg') // bg-generation
 var fs = require('fs');
+var uuid = require('uuid/v4');
 
 // Db Access
 var sqlite3 = require('sqlite3').verbose()
@@ -73,10 +74,6 @@ function generateRandomBackground() {
     randomJpeg.writeJPEGSync(tmp_bg_filename, image_options);
     return tmp_bg_filename;
 }
-
-
-/**
- */
 
 
 /**
@@ -241,11 +238,30 @@ function instruction_to_sentence(label, action) {
 }
 
 /**
+ * Stores the board to the DB, with the solution to the board
+ * in JSON string.
+ * @param {guid} board_guid 
+ * @param {json_string} solution 
+ */
+function storeBoardToDB(board_guid, solution) {
+    let stmt = db.prepare('insert into captchas (guid, solution) \
+                                values ($guid, $solution)');
+    stmt.run({$guid: board_guid, $solution: solution},
+            function(error) {
+                if (error) {
+                    console.log('Error saving the board and solution');
+                    console.log(error);
+                }
+            });
+}
+
+/**
  * This functions generate a board.
  */
 async function generateBoard() {
     try {
         let board_filename = 'abc.jpg'; // todo: randomly gen
+        let board_guid = uuid();
         let solution = [];
         let labels = await generateRandomLabels(5);
         let instructions = assignInstructions(labels);
@@ -256,7 +272,8 @@ async function generateBoard() {
             solution[i] = [instructions[labels[i]], icon_coordinates[labels[i]]]
             instruction_sentences[i] = instruction_to_sentence(labels[i], instructions[labels[i]]);
         }
-        return [b64_img, instruction_sentences, solution];
+        storeBoardToDB(board_guid, JSON.stringify(solution));
+        return [b64_img, instruction_sentences, board_guid];
     } catch (error) {
         console.error(error)
     }

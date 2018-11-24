@@ -127,6 +127,8 @@ function ajaxGet(url) {
         );
         console.log('Instructions');
         document.getElementById('instruction-textbox').textContent = payload[1].toString();
+
+        console.log('Board GUID for solution' + payload[2]);
         //var responseObj = JSON.parse(xhttp.responseText);
 
         //var message = responseObj.boop;
