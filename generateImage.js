@@ -135,10 +135,30 @@ function generateRandomNonIntersectingCoordinates(min_x, max_x, min_y, max_y, po
             }
         }
         if (is_valid) {
-            coords.push(potential_coord);
+            coords.push(potential_coord)
         }
     }
     return coords;
+}
+
+/**
+ * Gets a random value between 0 - 255
+ */
+function getRandom8BitValue() {
+    return Math.floor(Math.random() * 255);
+}
+
+/**
+ * Applies some processing to the icon
+ * @param {JIMP_img} icon_img 
+ */
+function processIcon(icon_img) {
+    icon_img.rotate((Math.random() * 90) - 45);     // rotate the image b/w -45 to 45 degrees
+    icon_img.color([
+        {apply: 'red', params: [getRandom8BitValue()]},
+        {apply: 'green', params: [getRandom8BitValue()]},
+        {apply: 'blue', params: [getRandom8BitValue()]}
+    ]);
 }
 
 /**
@@ -160,10 +180,11 @@ async function constructBoardImage(board_filename, icons) {
     for (var icon in icons) {
         let coordinate = [coordinates[i][0], coordinates[i][1]];
         let icon_img = await Jimp.read('./icons/' + icons[icon]);
-        icon_img.resize(200, 200);
+        processIcon(icon_img);
         canvas.composite(icon_img, coordinate[0], coordinate[1]);
         icon_coordinates[icon] = coordinate;
         i++;
+        //break;
     }
     canvas.write(board_filename);
     let b64_img = await canvas.getBase64Async(Jimp.AUTO)
