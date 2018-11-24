@@ -45,7 +45,10 @@ app.post('/submit', function(request, response) {
 	console.log(request.body.mouseMovements);
 	console.log("Mouse Clicks: ");
 	console.log(request.body.mouseClicks);
+	console.log("solution ID: " + request.body.solutionID);
+
 	response.status(200).send();
+
 	//var boop = JSON.stringify({boop: request.body.name + " has booped the server!"})
 	//response.send(boop);
 });

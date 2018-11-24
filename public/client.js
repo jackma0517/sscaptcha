@@ -4,7 +4,7 @@
  */
 var mouseMovementArray = [];
 var mouseClicksArray = [];
-
+var ID = "";
 
 var recorder = {
     
@@ -128,7 +128,8 @@ function ajaxGet(url) {
         console.log('Instructions');
         document.getElementById('instruction-textbox').textContent = payload[1].toString();
 
-        console.log('Board GUID for solution' + payload[2]);
+        console.log('Board GUID for solution ' + payload[2]);
+        ID = payload[2];
         //var responseObj = JSON.parse(xhttp.responseText);
 
         //var message = responseObj.boop;
@@ -172,8 +173,10 @@ window.onload = function () {
       recorder.playback();
       var data = {
         mouseMovements: mouseMovementArray,
-        mouseClicks: mouseClicksArray
+        mouseClicks: mouseClicksArray,
+          solutionID: ID
       };
+
         ajaxPost('http://localhost:8080' + '/submit', data, showSurvey(), 
         function(){
           alert("Authentication failed please retry captcha");
