@@ -86,18 +86,33 @@ body {
 	display: none;
 }
 #modal-content {
-	background-color: #EEEEEE;
+	background-color: #F8F8F8;
 	margin-top: 7%; /* 10% from the top */
-	margin-left: 12.5%;
+	margin-left: 13.5%;
   	border: 1px solid #888;
 	width: 1000px;
 	height: 600px;
 	overflow-y: auto;
 	text-align: left;
-	padding-left: 20px;
 	font: 18px/24px Inconsolata, Arial;
 }
-
+.modal-header {
+	background-color: #D3D3D3;
+	width: 980px;
+	height: 31px;
+	text-align: center;
+	font: 24px Inconsolata, Arial;
+	font-weight: bold;
+}
+#surveyContainer {
+	margin-left: 20px;
+}
+.survey-image {
+	height: 120px;
+	padding-top: 0px;
+	padding-bottom: 0;
+	width: 170px;
+}
 #survey-close-btn {
 	float: right;
 	padding: 5px;

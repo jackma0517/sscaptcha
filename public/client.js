@@ -211,7 +211,8 @@ function checkSurveyComplete(){
      $("input[name=ambiguity-level]:checked").val() == undefined ||
      $("input[name=difficulty-level]:checked").val() == undefined ||
      $("input[name=shape-sizes]:checked").val() == undefined ||
-     $("input[name=interactive-difficulty]:checked").val() == undefined){
+     $("input[name=interactive-difficulty]:checked").val() == undefined ||
+     $("input[name=text-SS]:checked").val() == undefined){
       return false;
   } 
   return true;
@@ -226,7 +227,8 @@ function submitSurvey(){
     ambiguity_level : $("input[name=ambiguity-level]:checked").val(),
     difficulty_level : $("input[name=difficulty-level]:checked").val(),
     shape_sizes : $("input[name=shape-sizes]:checked").val(),
-    interactive_difficulty : $("input[name=interactive-difficulty]:checked").val()
+    interactive_difficulty : $("input[name=interactive-difficulty]:checked").val(),
+    text_SS : $("input[name=text-SS]:checked").val()
   };
 
   var data = {
