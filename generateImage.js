@@ -103,6 +103,8 @@ const PLASMA_PARAMS = ['black-black', 'grey-grey', 'white-white', 'tomato-tomato
  *    Reccomend maybe to use:
  *      ['black-black', 'grey-grey', 'white-white'] for a more 'uniform' random bg
  *    Ref: http://www.imagemagick.org/Usage/canvas/#plasma
+ * 
+ *  Though note that this function is QUITE slow to return :/
  */
 function generateRandomBackgroundv4() {
     return new Promise((resolve) => {
@@ -111,7 +113,8 @@ function generateRandomBackgroundv4() {
         gm(image_width, image_height)
             .command('convert')
             .out(plasma_param)
-            .toBuffer('PNG', (err, buf) => {
+            .paint(10)
+            .toBuffer('JPG', (err, buf) => {
                 if (err) {
                     console.log(err);
                     throw err;
@@ -209,7 +212,6 @@ async function constructBoardImage(board_filename, icons) {
     let icon_coordinates = {}
     let num_icons = Object.keys(icons).length;
     let bg64 = await generateRandomBackgroundv4()//generateRandomBackgroundB64();
-    console.log(bg64);
     //bg64 = bg64.replace('data:image/svg+xml;base64,', '');
     //let buf = new Buffer(bg64, 'base64');
     let canvas = await Jimp.read(bg64);
