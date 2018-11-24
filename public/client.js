@@ -14,7 +14,7 @@ var recorder = {
       $(window).mousemove(function(e) {
         if(that.state == 1) {
             //hardcoding value to be within the captcha image
-            if((e.clientX > 190 && e.clientX < 1170) && (e.clientY > 88 && e.clientY < 660)){
+            if((e.clientX > 200 && e.clientX < 1000) && (e.clientY > 200 && e.clientY < 700)){
                 that.frames.push([e.clientX, e.clientY]);
                 mouseMovementArray.push([e.clientX, e.clientY]);   
             }
@@ -90,11 +90,10 @@ function ajaxPost(url, data, onSuccess, onError) {
       if (status == 200) { /* Success */
         console.log("POST success");
         console.log("response: " + xhttp.responseText);
-        alert(xhttp.responseText);
-        if(onSuccess){
-          onSuccess();
-        }
         //var responseObj = JSON.parse(xhttp.responseText);
+        if(onSuccess){
+          onSuccess(xhttp.responseText);
+        }
         //var message = responseObj.boop;
         //alert(message);
 
@@ -127,8 +126,32 @@ function ajaxGet(url) {
         document.getElementById('captcha-image').setAttribute(
           'src', payload[0]
         );
+
+        var instruction_header = document.createElement("h4");
+        instruction_header.innerHTML = "Instructions";
+        var instruction_box = document.getElementById('instruction-textbox');
+        //remove old instructions
+        instruction_box.textContent = "";
+        instruction_box.append(instruction_header);
+
         console.log('Instructions');
-        document.getElementById('instruction-textbox').textContent = payload[1].toString();
+        var instrStr = payload[1].toString();
+        var count = 0;
+        var step = 1;
+        for(var i = 0; i<instrStr.length; i++){
+          if(instrStr[i] == "," || i == instrStr.length-1){
+            if(i == instrStr.length -1 ){
+              var temp = step + ". " + instrStr.substring(count, i+1);
+            }else {
+              var temp = step + ". " + instrStr.substring(count, i);
+            }
+            var newLine = document.createElement("br");
+            count = i+1;
+            step = step+1;
+            instruction_box.append(temp);
+            instruction_box.append(newLine);
+          }
+        }
 
         console.log('Board GUID for solution ' + payload[2]);
         ID = payload[2];
@@ -178,8 +201,15 @@ window.onload = function () {
         mouseClicks: mouseClicksArray,
           solutionID: ID
       };
-
-        ajaxPost('http://localhost:8080' + '/submit', data, showSurvey(), 
+      console.log(mouseClicksArray);
+        ajaxPost('http://localhost:8080' + '/submit', data, function(response){
+          if(response == "human"){
+            alert("You have been identified as human! \n Please take a moment to complete our survey");
+            showSurvey();
+          } else {
+            alert("You have been identified as a bot! \n If this is incorrect please get a new Captcha or complete our survey");
+          }
+        }, 
         function(){
           alert("Authentication failed please retry captcha");
         });
@@ -221,11 +251,33 @@ function checkSurveyComplete(){
      $("input[name=difficulty-level]:checked").val() == undefined ||
      $("input[name=shape-sizes]:checked").val() == undefined ||
      $("input[name=interactive-difficulty]:checked").val() == undefined ||
-     $("input[name=text-SS]:checked").val() == undefined){
+     $("input[name=text-SS]:checked").val() == undefined ||
+     $("input[name=image-SS]:checked").val() == undefined){
       return false;
   } 
   return true;
 }
+
+function clearRadioButtonList(){
+  var radioButtonList = document.getElementsByTagName('input');
+  for (var i = 0; i < radioButtonList.length; i++) {
+    var inputElement = radioButtonList[i];
+    inputElement.checked = false;
+  }
+  return false;
+}
+
+function searchDOMTree(element, name) {
+  while (element.className != name) {
+    //search all siblings of element for class name
+    element = element.nextSibling;
+    if (!element) {
+      alert("cannot find element: ", name);
+    }
+  }
+  return element;
+}
+
 function submitSurvey(){
 
   var surveyResults = {
@@ -237,7 +289,8 @@ function submitSurvey(){
     difficulty_level : $("input[name=difficulty-level]:checked").val(),
     shape_sizes : $("input[name=shape-sizes]:checked").val(),
     interactive_difficulty : $("input[name=interactive-difficulty]:checked").val(),
-    text_SS : $("input[name=text-SS]:checked").val()
+    text_SS : $("input[name=text-SS]:checked").val(),
+    image_SS: $("input[name=image-SS]:checked").val() 
   };
 
   var data = {
@@ -246,6 +299,8 @@ function submitSurvey(){
 
   ajaxPost('http://localhost:8080' + '/submitSurvey', data, function(){
     alert("Thank you for participating :) ");
+    clearRadioButtonList();
+    hideSurvey();
   }, function(){
     alert("Error Receiving Survey. Please Submit Again");
   });
