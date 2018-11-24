@@ -4,7 +4,7 @@
  */
 var mouseMovementArray = [];
 var mouseClicksArray = [];
-
+var ID = "";
 
 var recorder = {
     
@@ -128,7 +128,8 @@ function ajaxGet(url) {
         console.log('Instructions');
         document.getElementById('instruction-textbox').textContent = payload[1].toString();
 
-        console.log('Board GUID for solution' + payload[2]);
+        console.log('Board GUID for solution ' + payload[2]);
+        ID = payload[2];
         //var responseObj = JSON.parse(xhttp.responseText);
 
         //var message = responseObj.boop;
@@ -172,8 +173,10 @@ window.onload = function () {
       recorder.playback();
       var data = {
         mouseMovements: mouseMovementArray,
-        mouseClicks: mouseClicksArray
+        mouseClicks: mouseClicksArray,
+          solutionID: ID
       };
+
         ajaxPost('http://localhost:8080' + '/submit', data, showSurvey(), 
         function(){
           alert("Authentication failed please retry captcha");
@@ -215,7 +218,8 @@ function checkSurveyComplete(){
      $("input[name=ambiguity-level]:checked").val() == undefined ||
      $("input[name=difficulty-level]:checked").val() == undefined ||
      $("input[name=shape-sizes]:checked").val() == undefined ||
-     $("input[name=interactive-difficulty]:checked").val() == undefined){
+     $("input[name=interactive-difficulty]:checked").val() == undefined ||
+     $("input[name=text-SS]:checked").val() == undefined){
       return false;
   } 
   return true;
@@ -230,7 +234,8 @@ function submitSurvey(){
     ambiguity_level : $("input[name=ambiguity-level]:checked").val(),
     difficulty_level : $("input[name=difficulty-level]:checked").val(),
     shape_sizes : $("input[name=shape-sizes]:checked").val(),
-    interactive_difficulty : $("input[name=interactive-difficulty]:checked").val()
+    interactive_difficulty : $("input[name=interactive-difficulty]:checked").val(),
+    text_SS : $("input[name=text-SS]:checked").val()
   };
 
   var data = {
