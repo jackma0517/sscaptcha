@@ -189,6 +189,7 @@ window.onload = function () {
 
   //starts recording on load
   recorder.record();
+  ajaxGet('http://localhost:8080' + '/captcha');
 
   document.getElementById('submit-btn').addEventListener('click', function(){
     if(mouseMovementArray.length == 0){
