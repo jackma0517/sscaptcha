@@ -21,6 +21,8 @@ function cors(req, res, next){
   	next();
 }
 
+function create_instruction(icon, action) {
+}
 
 // Instantiate an express.js application
 var app = express();
@@ -34,8 +36,8 @@ app.use('/', express.static(STATIC_ROOT));			// Serve STATIC_ROOT at URL "/" as 
 
 app.get('/captcha', async function(request, response){
 	console.log('Client requesting captcha');
-	var [boardBase64, instructions, solution] = await generateImage.generateBoard();
-	response.send(JSON.stringify(boardBase64));
+	var [boardBase64, instructions, board_guid] = await generateImage.generateBoard();
+	response.send(JSON.stringify([boardBase64, instructions, board_guid]));
 });
 
 app.post('/submit', function(request, response) {
@@ -43,7 +45,10 @@ app.post('/submit', function(request, response) {
 	console.log(request.body.mouseMovements);
 	console.log("Mouse Clicks: ");
 	console.log(request.body.mouseClicks);
+	console.log("solution ID: " + request.body.solutionID);
+
 	response.status(200).send();
+
 	//var boop = JSON.stringify({boop: request.body.name + " has booped the server!"})
 	//response.send(boop);
 });

@@ -8,6 +8,10 @@ db.serialize(function() {
     db.run('create table if not exists icons (id integer primary key,\
                                               label text not null,\
                                               filename text not null)')
-})
+});
 
+db.serialize(function() {
+    db.run('create table if not exists captchas (guid text primary key,\
+                                                 solution text not null)')
+});
 
