@@ -283,11 +283,11 @@ async function constructBoardImage(board_filename, icons) {
     shuffleArray(palette);
     let icon_coordinates = {}
     let num_icons = Object.keys(icons).length;
-    let bg64 = await generateRandomBackgroundB64(bg_color);//generateRandomBackgroundB64();
-    bg64 = bg64.replace('data:image/svg+xml;base64,', '');
-    let buf = new Buffer(bg64, 'base64');
-    let canvas = await Jimp.read(buf);
-    let coordinates = generateRandomNonIntersectingCoordinates(0, image_width-icon_size, 0, image_height-icon_size, 4*icon_size, num_icons);
+    let bg64 = await generateRandomBackgroundv4(bg_color);//generateRandomBackgroundB64();
+    // bg64 = bg64.replace('data:image/svg+xml;base64,', '');
+    // let buf = new Buffer(bg64, 'base64');
+    let canvas = await Jimp.read(bg64);
+    let coordinates = generateRandomNonIntersectingCoordinates(0, image_width-2*icon_size, 0, image_height-2*icon_size, 4*icon_size, num_icons);
 
     var i = 0;
     for (var icon in icons) {
@@ -348,9 +348,7 @@ const MOVE_SENTENCES = [
 ];
 
 const CLICK_SENTENCES = [
-    'Click on the {label}',
-    'Select the {label}',
-    'Press the {label}',
+    'Click on the {label}'
 ]
 
 const AVOID_SENTENCES = [
