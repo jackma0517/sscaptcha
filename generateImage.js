@@ -17,6 +17,17 @@ const image_width = 800;
 const image_height = 500;
 const icon_size = 100;
 
+// Image colour constants
+// adapted to be colourblind safe
+const PALETTES = [
+    ['#8c510a','#d8b365','#f6e8c3','#c7eae5','#5ab4ac','#01665e'],
+    ['#c51b7d','#e9a3c9','#fde0ef','#e6f5d0','#a1d76a','#4d9221'],
+    ['#762a83','#af8dc3','#e7d4e8','#d9f0d3','#7fbf7b','#1b7837'],
+    ['#b35806','#f1a340','#fee0b6','#d8daeb','#998ec3','#542788'],
+    ['#b2182b','#ef8a62','#fddbc7','#d1e5f0','#67a9cf','#2166ac'],
+    ['#d73027','#fc8d59','#fee090','#e0f3f8','#91bfdb','#4575b4']
+];
+
 /**
  * Obtains the filepath to an icons which matches the labels
  * @param {sring array} labels 
@@ -106,10 +117,11 @@ const PLASMA_PARAMS = ['black-black', 'grey-grey', 'white-white', 'tomato-tomato
  * 
  *  Though note that this function is QUITE slow to return :/
  */
-function generateRandomBackgroundv4() {
+function generateRandomBackgroundv4(color) {
     return new Promise((resolve) => {
         let random_palette = PLASMA_PARAMS[Math.floor(Math.random() * PLASMA_PARAMS.length)];
-        let plasma_param = 'plasma:{param}'.replace('{param}', random_palette);
+        let plasma_param = 'plasma:{param}'.replace('{param}', color + '-' + color);
+        console.log(plasma_param);
         gm(image_width, image_height)
             .command('convert')
             .out(plasma_param)
@@ -191,15 +203,29 @@ function getRandom8BitValue() {
 /**
  * Applies some processing to the icon
  * @param {JIMP_img} icon_img 
+ * @param {color}    color
  */
-function processIcon(icon_img) {
+function processIcon(icon_img, color) {
     icon_img.resize(icon_size, Jimp.AUTO);
     icon_img.rotate((Math.random() * 90) - 45);     // rotate the image b/w -45 to 45 degrees
+    let rgb = Jimp.intToRGBA(Jimp.cssColorToHex(color))
     icon_img.color([
-        {apply: 'red', params: [getRandom8BitValue()]},
-        {apply: 'green', params: [getRandom8BitValue()]},
-        {apply: 'blue', params: [getRandom8BitValue()]}
+        {apply: 'red', params: [rgb.r]},
+        {apply: 'green', params: [rgb.g]},
+        {apply: 'blue', params: [rgb.b]}
     ]);
+}
+
+/**
+ * Array shuffler
+ * Re: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+ * @param {array} array 
+ */
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }
 
 /**
@@ -209,9 +235,12 @@ function processIcon(icon_img) {
  * @param {label, filename dictionary} icons 
  */
 async function constructBoardImage(board_filename, icons) {
+    let palette = PALETTES[Math.floor(Math.random() * PALETTES.length)];
+    // TODO: Randomize color order in palette
+    shuffleArray(palette);
     let icon_coordinates = {}
     let num_icons = Object.keys(icons).length;
-    let bg64 = await generateRandomBackgroundv4()//generateRandomBackgroundB64();
+    let bg64 = await generateRandomBackgroundv4(palette[0]);//generateRandomBackgroundB64();
     //bg64 = bg64.replace('data:image/svg+xml;base64,', '');
     //let buf = new Buffer(bg64, 'base64');
     let canvas = await Jimp.read(bg64);
@@ -221,7 +250,7 @@ async function constructBoardImage(board_filename, icons) {
     for (var icon in icons) {
         let coordinate = [coordinates[i][0], coordinates[i][1]];
         let icon_img = await Jimp.read('./icons/' + icons[icon]);
-        processIcon(icon_img);
+        processIcon(icon_img, palette[i+1]);
         canvas.composite(icon_img, coordinate[0], coordinate[1]);
         icon_coordinates[icon] = coordinate;
         i++;
