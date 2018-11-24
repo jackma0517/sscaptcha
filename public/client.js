@@ -89,6 +89,7 @@ function ajaxPost(url, data, onSuccess, onError) {
       var status = xhttp.status;
       if (status == 200) { /* Success */
         console.log("POST success");
+        console.log("response: " + xhttp.responseText);
         alert(xhttp.responseText);
         if(onSuccess){
           onSuccess();
