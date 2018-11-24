@@ -3,6 +3,7 @@ var path = require('path');
 var express = require('express');
 
 var generateImage = require('./generateImage');
+var solutionChecker = require('./solutionChecker');
 //var http = require('http');
 var fs = require('fs'); // for base64 image
 
@@ -41,13 +42,21 @@ app.get('/captcha', async function(request, response){
 });
 
 app.post('/submit', function(request, response) {
-	console.log("Mouse Movements: ");
-	console.log(request.body.mouseMovements);
+	//console.log("Mouse Movements: ");
+	//console.log(request.body.mouseMovements);
 	console.log("Mouse Clicks: ");
 	console.log(request.body.mouseClicks);
 	console.log("solution ID: " + request.body.solutionID);
 
-	response.status(200).send();
+	var verifyPromise = solutionChecker.verify(request.body.solutionID, request.body.mouseClicks, request.body.mouseMovements);
+	verifyPromise.then(function(res){
+	    console.log(res);
+        response.status(200).send(res);
+    }).catch(function(err){
+        console.log(err);
+        response.send(err);
+    });
+
 
 	//var boop = JSON.stringify({boop: request.body.name + " has booped the server!"})
 	//response.send(boop);
