@@ -1,6 +1,9 @@
 var Jimp = require('jimp'); // image compositing 
+
 var randomJpeg = require('random-jpeg') // bg-generation
 var trianglify = require('trianglify') //bg-generation v3
+var gm = require('gm').subClass({imageMagick: true}) // bg-generation v4, depends on imageMagick (or graphicsMagick)
+
 var fs = require('fs');
 var uuid = require('uuid/v4');
 
@@ -90,6 +93,35 @@ function generateRandomBackgroundB64() {
 }
 
 
+const PLASMA_PARAMS = ['black-black', 'grey-grey', 'white-white', 'tomato-tomato', 'steelblue-steelblue']
+/**
+ * Generates yet another random background
+ * Generated with imageMagic:
+ *  - to change certain colours can replace <param>inside
+ *      the .out('plasma:<param>')
+ *    with the values: ['blue', 'yellow', 'green-yellow', 'steelblue', 'etc']
+ *    Reccomend maybe to use:
+ *      ['black-black', 'grey-grey', 'white-white'] for a more 'uniform' random bg
+ *    Ref: http://www.imagemagick.org/Usage/canvas/#plasma
+ */
+function generateRandomBackgroundv4() {
+    return new Promise((resolve) => {
+        let random_palette = PLASMA_PARAMS[Math.floor(Math.random() * PLASMA_PARAMS.length)];
+        let plasma_param = 'plasma:{param}'.replace('{param}', random_palette);
+        gm(image_width, image_height)
+            .command('convert')
+            .out(plasma_param)
+            .toBuffer('PNG', (err, buf) => {
+                if (err) {
+                    console.log(err);
+                    throw err;
+                }
+                resolve(buf);
+            });
+    });
+}
+
+
 /**
  * Acts to check whether two points intersects one anoter
  * to prevent icons from overlapping one another
@@ -176,7 +208,8 @@ function processIcon(icon_img) {
 async function constructBoardImage(board_filename, icons) {
     let icon_coordinates = {}
     let num_icons = Object.keys(icons).length;
-    let bg64 = generateRandomBackground()//generateRandomBackgroundB64();
+    let bg64 = await generateRandomBackgroundv4()//generateRandomBackgroundB64();
+    console.log(bg64);
     //bg64 = bg64.replace('data:image/svg+xml;base64,', '');
     //let buf = new Buffer(bg64, 'base64');
     let canvas = await Jimp.read(bg64);

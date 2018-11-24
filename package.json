@@ -7,6 +7,7 @@
     "dotenv": "^6.1.0",
     "express": "^4.16.4",
     "geopattern": "^1.2.3",
+    "gm": "^1.23.1",
     "jimp": "^0.5.6",
     "random-jpeg": "^0.1.4",
     "request": "^2.88.0",
