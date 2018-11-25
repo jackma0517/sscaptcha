@@ -64,7 +64,6 @@ function getPalette() {
     palette_raw.shift();
     let extended_palette = extendPalette(palette_raw, 5);
     palette = palette.concat(extended_palette);
-    console.log(palette)
     return palette;
 }
 
@@ -163,7 +162,6 @@ function generateRandomBackgroundv4(color) {
             color = PLASMA_PARAMS[Math.floor(Math.random() * PLASMA_PARAMS.length)];
         }
         let plasma_param = 'plasma:{param}'.replace('{param}', color + '-' + color);
-        console.log(plasma_param);
         gm(image_width, image_height)
             .command('convert')
             .out(plasma_param)
@@ -287,7 +285,7 @@ async function constructBoardImage(board_filename, icons) {
     // bg64 = bg64.replace('data:image/svg+xml;base64,', '');
     // let buf = new Buffer(bg64, 'base64');
     let canvas = await Jimp.read(bg64);
-    let coordinates = generateRandomNonIntersectingCoordinates(0, image_width-2*icon_size, 0, image_height-2*icon_size, 4*icon_size, num_icons);
+    let coordinates = generateRandomNonIntersectingCoordinates(0, image_width-2*icon_size, 0, image_height-2*icon_size, 3*icon_size, num_icons);
 
     var i = 0;
     for (var icon in icons) {
@@ -297,7 +295,6 @@ async function constructBoardImage(board_filename, icons) {
         canvas.composite(icon_img, coordinate[0], coordinate[1]);
         icon_coordinates[icon] = coordinate;
         i++;
-        //break;
     }
 
     canvas.write(board_filename);
