@@ -1,8 +1,8 @@
 var Jimp = require('jimp'); // image compositing 
 
 var randomJpeg = require('random-jpeg') // bg-generation
-var trianglify = require('trianglify') //bg-generation v3
-var gm = require('gm').subClass({imageMagick: true}) // bg-generation v4, depends on imageMagick (or graphicsMagick)
+var trianglify = require('trianglify') //bg-generation v2
+var gm = require('gm').subClass({imageMagick: true}) // bg-generation v3, depends on imageMagick (or graphicsMagick)
 
 var fs = require('fs');
 var uuid = require('uuid/v4');
@@ -16,6 +16,9 @@ var db = new sqlite3.Database(process.env.SQLITE_DB)
 const image_width = 800;
 const image_height = 500;
 const icon_size = 100;
+
+// 1: ugly squares, 2: triangles, 3: imagemagick
+const bg_generator_version = 1;
 
 // Image colour constants
 // Suppoesd to be colourblind safe
@@ -122,22 +125,20 @@ function generateRandomLabels(num_labels) {
  * Generates a random background
  * TODO: Make it nicer? 
  */
-function generateRandomBackground() {
-    let tmp_bg_filename = 'tempbg.jpg'; //TODO: random hash?
-    // TODO: Why does it disrespect my colour choice :( 
-    var image_options = {
+function generateRandomBackgroundV1(color) {
+    let image_options = {
         colors: [[255,0,0], [0,255,0],[0,0,255]],
         width:image_width,
         height:image_height
     };
-    randomJpeg.writeJPEGSync(tmp_bg_filename, image_options);
-    return tmp_bg_filename;
+    let img = randomJpeg.drawJPEG(image_options);
+    return img.data;
 }
 
 /**
- * Returns a random background encoded in base64
+ * Returns a random triangle background encoded in base64
  */
-function generateRandomBackgroundB64(color) {
+function generateRandomBackgroundV2(color) {
     let bg = trianglify({width: image_width, height: image_height, x_colors: ['#FFFFFF', color]});
     return bg.png().replace('data:image/png;base64,', '');
 }
@@ -156,7 +157,7 @@ const PLASMA_PARAMS = ['black-black', 'grey-grey', 'white-white', 'tomato-tomato
  * 
  *  Though note that this function is QUITE slow to return :/
  */
-function generateRandomBackgroundv4(color) {
+function generateRandomBackgroundV3(color) {
     return new Promise((resolve) => {
         if (!color) {
             color = PLASMA_PARAMS[Math.floor(Math.random() * PLASMA_PARAMS.length)];
@@ -176,6 +177,17 @@ function generateRandomBackgroundv4(color) {
     });
 }
 
+function generateRandomBackground(color) {
+    switch(bg_generator_version) {
+        case 1:
+            return generateRandomBackgroundV1(color);
+        case 2:
+            return generateRandomBackgroundV2(color);
+        case 3:
+            return generateRandomBackgroundV3(color);
+        default: throw Error('Invalid background generator version');
+    }
+}
 
 /**
  * Acts to check whether two points intersects one anoter
@@ -281,10 +293,9 @@ async function constructBoardImage(board_filename, icons) {
     shuffleArray(palette);
     let icon_coordinates = {}
     let num_icons = Object.keys(icons).length;
-    let bg64 = await generateRandomBackgroundv4(bg_color);//generateRandomBackgroundB64();
-    // bg64 = bg64.replace('data:image/svg+xml;base64,', '');
-    // let buf = new Buffer(bg64, 'base64');
-    let canvas = await Jimp.read(bg64);
+    let bg64 = await generateRandomBackground(bg_color);
+    let buf = Buffer(bg64, 'base64');
+    let canvas = await Jimp.read(buf);
     let coordinates = generateRandomNonIntersectingCoordinates(0, image_width-2*icon_size, 0, image_height-2*icon_size, 3*icon_size, num_icons);
 
     var i = 0;
