@@ -189,14 +189,14 @@ window.onload = function () {
 
   //starts recording on load
   recorder.record();
-  ajaxGet('http://localhost:8080' + '/captcha');
+  //ajaxGet('http://localhost:8080' + '/captcha');
 
   document.getElementById('submit-btn').addEventListener('click', function(){
     if(mouseMovementArray.length == 0){
       alert("Please record mouse movements before submitting captcha");
     } else {
     //playback mouse movements to user for better usability?
-      recorder.playback();
+      //recorder.playback();
       var data = {
         mouseMovements: mouseMovementArray,
         mouseClicks: mouseClicksArray,
@@ -205,8 +205,9 @@ window.onload = function () {
       console.log(mouseClicksArray);
         ajaxPost('http://localhost:8080' + '/submit', data, function(response){
           if(response == "human"){
-            alert("You have been identified as human! \n Please take a moment to complete our survey");
-            showSurvey();
+            //alert("You have been identified as human! \n Please take a moment to complete our survey");
+            window.location = 'http://localhost:8080/success.html';
+            //showSurvey();
           } else {
             alert("You have been identified as a bot! \n If this is incorrect please get a new Captcha or complete our survey");
           }
@@ -215,6 +216,9 @@ window.onload = function () {
           alert("Authentication failed please retry captcha");
         });
       }
+      mouseMovementArray = [];
+      mouseClicksArray = [];
+      ID = "";
   })
 
   document.getElementById('get-captcha').addEventListener('click', function(){

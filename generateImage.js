@@ -18,7 +18,7 @@ const image_height = 500;
 const icon_size = 100;
 
 // 1: ugly squares, 2: triangles, 3: imagemagick
-const bg_generator_version = 1;
+const bg_generator_version = 2;
 
 // Image colour constants
 // Suppoesd to be colourblind safe
@@ -316,7 +316,7 @@ async function constructBoardImage(board_filename, icons) {
 /* Simple get random action function */
 //const instruction_array = ['MOVE', 'CLICK', 'AVOID']
 // Only send click instructions for now
-const instruction_array = ['CLICK']
+const instruction_array = ['CLICK', 'AVOID']
 function getRandomInstruction() {
     return instruction_array[Math.floor(Math.random() * instruction_array.length)];
 }
@@ -360,9 +360,7 @@ const CLICK_SENTENCES = [
 ]
 
 const AVOID_SENTENCES = [
-    'Do not touch the {label}',
-    'Avoid the {label} at all costs',
-    'Make sure the mouse does not touch the {label}'
+    'Do not touch the {label}'
 ]
 
 /**

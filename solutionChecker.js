@@ -13,9 +13,8 @@ var db = new sqlite3.Database(process.env.SQLITE_DB)
 
 const pngSize = 100;
 
-function getSolution(solutionID){
+function getSolution(solutionID) {
     var sql = 'select solution from captchas where guid = ?';
-
     return new Promise(function(resolve,reject){
         db.get(sql, [solutionID], (err, result) => {
             if (err) {
@@ -33,44 +32,84 @@ function getSolution(solutionID){
 async function verify(solutionID, mouseClicks, mouseMovement){
     var solution = await getSolution(solutionID);
     return new Promise((resolve, reject)=>{
-        if(!checkMouseClick(solution,mouseClicks)){
+        if(!checkMouseClick(solution, mouseClicks)){
             reject("mouse click doesn't match");
+        }
+        if (!checkMouseAvoid(solution, mouseMovement)) {
+            reject("Did not avoid obstacles");
         }
         if(!checkMouseMovement(mouseMovement)){
             reject("mouse movement is suspicious");
         }
         resolve("human");
     });
-
 }
 
-function checkMouseClick(solutionArray, mouseClicks){
+function checkProximity(c1, icon_coordinate) {
+    if((c1[0] < icon_coordinate[0]) || (c1[0] > icon_coordinate[0]+pngSize)) {
+        return false;
+    }
+    if((c1[1] < icon_coordinate[1]) || (c1[1] > icon_coordinate[1]+pngSize)) {
+        return false;
+    }
+    return true;
+}
 
-    if(mouseClicks.length < solutionArray.length){
+function checkMouseAvoid(solutions, mouseMovement) {
+    var avoidSolution = [];
+
+    console.log('Mouse movement resolution: ' + mouseMovement.length);
+
+    // Filter for avoid solution
+    for (var i = 0; i < solutions.length; i++) {
+        if (solutions[i][0] == 'AVOID') {
+            avoidSolution.push(solutions[i][1]);
+        }
+    }
+
+    console.log("Comparing mouse movement to icons which needs to be avoided");
+    console.log("Coordinates to avoid:");
+    console.log(avoidSolution);
+
+    for (var i = 0; i < mouseMovement.length; i++) {
+        for (var j = 0; j < avoidSolution.length; j++) {
+            if (checkProximity(mouseMovement[i], avoidSolution[j])) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+function checkMouseClick(solutions, mouseClicks){
+    var solutionMouseClicks = [];
+
+    // Filter for click solution
+    for (var i = 0; i < solutions.length; i++) {
+        if (solutions[i][0] == 'CLICK') {
+            solutionMouseClicks.push(solutions[i][1]);
+        }
+    }
+
+    console.log('Checking mouse clicks:');
+    console.log(mouseClicks);
+    console.log('compared to solution:');
+    console.log(solutionMouseClicks);
+
+    if(mouseClicks.length < solutionMouseClicks.length){
         return false;
     }
 
-    for(var i = 0; i< solutionArray.length; i++){
-        var coordinates = solutionArray[i][1];
-        var click = mouseClicks[i];
-        console.log(i+ ":");
-        console.log(coordinates);
-        console.log(click);
-        if(click[0] < coordinates[0] || click[0] > coordinates[0]+pngSize){
+    for(var i = 0; i< solutionMouseClicks.length; i++){
+        if (!checkProximity(mouseClicks[i], solutionMouseClicks[i])) {
             return false;
         }
-
-        if(click[1] < coordinates[1] || click[1] > coordinates[1]+pngSize){
-          return false;
-        }
     }
-
     return true;
 }
 
 
 function checkMouseMovement(mouseMovement){
-
     return true;
 }
 
