@@ -36,10 +36,21 @@ app.use(cors);										// Enable CORS
 app.use('/', express.static(STATIC_ROOT));			// Serve STATIC_ROOT at URL "/" as a static resource
 
 app.get('/captcha', async function(request, response){
-	console.log('Client requesting captcha');
-	var [boardBase64, instructions, board_guid] = await generateImage.generateBoard();
-	response.send(JSON.stringify([boardBase64, instructions, board_guid]));
+	obtainCaptcha(request, response);
 });
+
+
+async function obtainCaptcha(request, response) {
+	console.log('Client requesting captcha');
+	try {
+		var [boardBase64, instructions, board_guid] = await generateImage.generateBoard();
+		response.send(JSON.stringify([boardBase64, instructions, board_guid]));
+	} catch (error) {
+		// Retry
+		console.log('Error encountered, retrying...')
+		obtainCaptcha(request, response);
+	}
+}
 
 app.post('/submit', function(request, response) {
 	//console.log("Mouse Movements: ");
