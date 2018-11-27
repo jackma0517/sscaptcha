@@ -22,7 +22,7 @@ const bg_generator_version = 1;
 
 // minimum and maximum number of labels on the board
 const min_labels = 5;
-const max_labels = 7;
+const max_labels = 10;
 
 // minimum and maximum number of instructions to show user
 const min_instructions = 3;
@@ -236,10 +236,12 @@ function checkIntersection(p1, p2, point_size) {
  */
 function generateRandomNonIntersectingCoordinates(min_x, max_x, min_y, max_y, point_size, num_coords) {
     let coords = [];
+    let num_iterations = 0;
+    let max_iterations = 10000; // prevent infinite loop in case we initialize with bad starting coordinates
     while (coords.length < num_coords) {
+        num_iterations++;
         let potential_coord = [Math.random() * (max_x - min_x) + min_x, Math.random() * (max_y - min_y) + min_y];
         let is_valid = true;
-        console.log('creating coordinates...')
         if (coords.length > 0) {
             for (var i = 0; i < coords.length; i++) {
                 is_valid = checkIntersection(potential_coord, coords[i], point_size);
@@ -250,6 +252,10 @@ function generateRandomNonIntersectingCoordinates(min_x, max_x, min_y, max_y, po
         }
         if (is_valid) {
             coords.push(potential_coord)
+        }
+        if (num_iterations > max_iterations) {
+            console.log('Coordinate generation, maximum iterations reached, retrying...');
+            return generateRandomNonIntersectingCoordinates(min_x, max_x, min_y, max_y, point_size, num_coords);
         }
     }
     return coords;
