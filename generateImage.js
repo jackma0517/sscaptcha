@@ -21,12 +21,12 @@ const icon_size = 100;
 const bg_generator_version = 1;
 
 // minimum and maximum number of labels on the board
-const min_labels = 5;
-const max_labels = 10;
+const min_icons = 5;
+const max_icons = 10;
 
 // minimum and maximum number of instructions to show user
-const min_instructions = 3;
-const max_instructions = 4;
+const min_instructions = 2;
+const max_instructions = 3;
 
 // Image colour constants
 // Suppoesd to be colourblind safe
@@ -73,7 +73,7 @@ function getPalette() {
     let palette_raw = PALETTES_CONTRAST[Math.floor(Math.random() * PALETTES_CONTRAST.length)];
     palette[0] = palette_raw[0];
     palette_raw.shift();
-    let extended_palette = extendPalette(palette_raw, 5);
+    let extended_palette = extendPalette(palette_raw, max_icons);
     palette = palette.concat(extended_palette);
     return palette;
 }
@@ -445,7 +445,7 @@ async function generateBoard() {
 
         // How many icons are we putting, how many instructions
         // will there be?
-        let num_labels = Math.ceil(Math.random() * (max_labels - min_labels) + min_labels); //  
+        let num_labels = Math.ceil(Math.random() * (max_icons - min_icons) + min_icons); //  
         let num_instructions = Math.ceil(Math.random() * (max_instructions - min_instructions) + min_instructions);
         num_instructions = (num_instructions > num_labels) ? num_labels : num_instructions;
 
