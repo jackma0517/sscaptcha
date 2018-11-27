@@ -20,6 +20,14 @@ const icon_size = 100;
 // 1: ugly squares, 2: triangles, 3: imagemagick
 const bg_generator_version = 1;
 
+// minimum and maximum number of labels on the board
+const min_labels = 5;
+const max_labels = 7;
+
+// minimum and maximum number of instructions to show user
+const min_instructions = 3;
+const max_instructions = 4;
+
 // Image colour constants
 // Suppoesd to be colourblind safe
 // but doesn't look too nice :<
@@ -218,6 +226,7 @@ function checkIntersection(p1, p2, point_size) {
 
 /**
  * Generates num_coords non-intersecting coordinates
+ * This function may not terminate.
  * @param {*} min_x 
  * @param {*} max_x 
  * @param {*} min_y 
@@ -230,6 +239,7 @@ function generateRandomNonIntersectingCoordinates(min_x, max_x, min_y, max_y, po
     while (coords.length < num_coords) {
         let potential_coord = [Math.random() * (max_x - min_x) + min_x, Math.random() * (max_y - min_y) + min_y];
         let is_valid = true;
+        console.log('creating coordinates...')
         if (coords.length > 0) {
             for (var i = 0; i < coords.length; i++) {
                 is_valid = checkIntersection(potential_coord, coords[i], point_size);
@@ -296,7 +306,7 @@ async function constructBoardImage(board_filename, icons) {
     let bg64 = await generateRandomBackground(bg_color);
     let buf = Buffer.from(bg64, 'base64');
     let canvas = await Jimp.read(buf);
-    let coordinates = generateRandomNonIntersectingCoordinates(0, image_width-2*icon_size, 0, image_height-2*icon_size, 3*icon_size, num_icons);
+    let coordinates = generateRandomNonIntersectingCoordinates(0, image_width-2.5*icon_size, 0, image_height-1.5*icon_size, 2.5*icon_size, num_icons);
 
     var i = 0;
     for (var icon in icons) {
@@ -315,7 +325,9 @@ async function constructBoardImage(board_filename, icons) {
 
 /* Simple get random action function */
 //const instruction_array = ['MOVE', 'CLICK', 'AVOID']
+// The 'NONE' instruction is just noise to the board
 // Only send click instructions for now
+const noop_instruction = 'NONE';
 const instruction_array = ['CLICK', 'AVOID']
 function getRandomInstruction() {
     return instruction_array[Math.floor(Math.random() * instruction_array.length)];
@@ -324,12 +336,24 @@ function getRandomInstruction() {
 /**
  * Returns a dictionary of label to action
  * @param {string_array} labels 
+ * @param {int} num_noop_inst the number of no-operation instructions
  */
-function assignInstructions(labels) {
+function assignInstructions(labels, num_noop_inst) {
     let instruction_dict = {};
-    for (var i = 0; i < labels.length; i++) {
+    let label_index = 0;
+
+    // Assign no-op instructions first
+    while (num_noop_inst > 0) {
+        instruction_dict[labels[label_index]] = noop_instruction;
+        label_index++;
+        num_noop_inst--;
+    }
+
+    // Assign valid instructions
+    for (var i = label_index; i < labels.length; i++) {
         instruction_dict[labels[i]] = getRandomInstruction();
     }
+
     return instruction_dict;
 }
 
@@ -412,14 +436,27 @@ async function generateBoard() {
         let board_filename = 'abc.jpg'; // todo: randomly gen
         let board_guid = uuid();
         let solution = [];
-        let labels = await generateRandomLabels(5);
-        let instructions = assignInstructions(labels);
+
+        // How many icons are we putting, how many instructions
+        // will there be?
+        let num_labels = Math.ceil(Math.random() * (max_labels - min_labels) + min_labels); //  
+        let num_instructions = Math.ceil(Math.random() * (max_instructions - min_instructions) + min_instructions);
+        num_instructions = (num_instructions > num_labels) ? num_labels : num_instructions;
+
+        let num_noop_inst = num_labels - num_instructions;
+
+        let labels = await generateRandomLabels(num_labels);
+        let instructions = assignInstructions(labels, num_noop_inst);
+
         let icons = await getIcons(labels);
         let [icon_coordinates, b64_img] = await constructBoardImage(board_filename, icons);
         let instruction_sentences = []
+        let soln_index = 0;
         for (var i = 0; i < labels.length; i++) {
-            solution[i] = [instructions[labels[i]], icon_coordinates[labels[i]]]
-            instruction_sentences[i] = instruction_to_sentence(labels[i], instructions[labels[i]]);
+            if (instructions[labels[i]] == 'NONE') continue; // these icons are just there for noise
+            solution[soln_index] = [instructions[labels[i]], icon_coordinates[labels[i]]]
+            instruction_sentences[soln_index] = instruction_to_sentence(labels[i], instructions[labels[i]]);
+            soln_index++;
         }
         storeBoardToDB(board_guid, JSON.stringify(solution));
         return [b64_img, instruction_sentences, board_guid];
