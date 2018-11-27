@@ -18,7 +18,7 @@ const image_height = 500;
 const icon_size = 100;
 
 // 1: ugly squares, 2: triangles, 3: imagemagick
-const bg_generator_version = 2;
+const bg_generator_version = 1;
 
 // Image colour constants
 // Suppoesd to be colourblind safe
@@ -294,7 +294,7 @@ async function constructBoardImage(board_filename, icons) {
     let icon_coordinates = {}
     let num_icons = Object.keys(icons).length;
     let bg64 = await generateRandomBackground(bg_color);
-    let buf = Buffer(bg64, 'base64');
+    let buf = Buffer.from(bg64, 'base64');
     let canvas = await Jimp.read(buf);
     let coordinates = generateRandomNonIntersectingCoordinates(0, image_width-2*icon_size, 0, image_height-2*icon_size, 3*icon_size, num_icons);
 
