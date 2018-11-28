@@ -13,6 +13,22 @@ var db = new sqlite3.Database(process.env.SQLITE_DB)
 
 const pngSize = 100;
 
+/**
+ * Deletes the solution
+ * @param {guid} solutionID 
+ */
+function deleteSolution(solutionID) {
+    var sql = 'delete from captchas where guid = ?';
+    db.run(sql, [solutionID]);
+}
+
+
+/**
+ * Obtains the solution of the captcha and
+ * deletes it from the database.
+ * Should not call this twice with the same solution id.
+ * @param {guid} solutionID 
+ */
 function getSolution(solutionID) {
     var sql = 'select solution from captchas where guid = ?';
     return new Promise(function(resolve,reject){
@@ -22,6 +38,7 @@ function getSolution(solutionID) {
                 reject(err);
             } else {
                 resolve(JSON.parse(result.solution));
+                deleteSolution(solutionID);
             }
         })
     });
