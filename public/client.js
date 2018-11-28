@@ -5,6 +5,7 @@
 var mouseMovementArray = [];
 var mouseClicksArray = [];
 var ID = "";
+var url = 'http://localhost:8080';
 
 var recorder = {
     
@@ -186,10 +187,14 @@ function ajaxGet(url) {
 
 //called after all HTML/CSS/Scripts/DOM are loaded
 window.onload = function () {
+  //get start time
+  var startTime = performance.now();
+  var totalTime = 0;
 
   //starts recording on load
   recorder.record();
-  //ajaxGet('http://localhost:8080' + '/captcha');
+  ajaxGet(url + '/captcha');
+
 
   document.getElementById('submit-btn').addEventListener('click', function(){
     if(mouseMovementArray.length == 0){
@@ -203,11 +208,14 @@ window.onload = function () {
           solutionID: ID
       };
       console.log(mouseClicksArray);
-        ajaxPost('http://localhost:8080' + '/submit', data, function(response){
+        ajaxPost(url + '/submit', data, function(response){
           if(response == "human"){
-            //alert("You have been identified as human! \n Please take a moment to complete our survey");
-            window.location = 'http://localhost:8080/success.html';
-            //showSurvey();
+            alert("You have been identified as human! \n Please take a moment to complete our survey");
+            //window.location = url + '/success.html';
+            //get time to complete
+            var endTime = performance.now();
+            totalTime = endTime - startTime;
+            showSurvey();
           } else {
             alert("You have been identified as a bot! \n If this is incorrect please get a new Captcha or complete our survey");
           }
@@ -223,7 +231,7 @@ window.onload = function () {
 
   document.getElementById('get-captcha').addEventListener('click', function(){
     console.log('Client requesting CAPTCHA');
-    ajaxGet('http://localhost:8080' + '/captcha');
+    ajaxGet(url + '/captcha');
   })
 
   document.getElementById("captcha-image").addEventListener('click', function(e){
@@ -242,7 +250,7 @@ window.onload = function () {
     if( !checkSurveyComplete()){
       alert("All Questions Must Be Answered To Submit");
     } else {
-      submitSurvey();
+      submitSurvey(totalTime);
     }
   })
 }
@@ -283,9 +291,10 @@ function searchDOMTree(element, name) {
   return element;
 }
 
-function submitSurvey(){
+function submitSurvey(totalTime){
 
   var surveyResults = {
+    recorded_time_ms : totalTime,  
     num_attempts : $("input[name=num-attempts]:checked").val(),
     solve_time : $("input[name=solve-time]:checked").val(),
     solve_again : $("input[name=solve-again]:checked").val(),
@@ -302,7 +311,7 @@ function submitSurvey(){
     surveyResults: surveyResults
   };
 
-  ajaxPost('http://localhost:8080' + '/submitSurvey', data, function(){
+  ajaxPost(url + '/submitSurvey', data, function(){
     alert("Thank you for participating :) ");
     clearRadioButtonList();
     hideSurvey();
