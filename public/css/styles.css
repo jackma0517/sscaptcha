@@ -87,9 +87,9 @@ body {
 #modal-content {
 	background-color: #F8F8F8;
 	margin-top: 7%; /* 10% from the top */
-	margin-left: 13.5%;
+	margin-left: 25%;
   	border: 1px solid #888;
-	width: 1000px;
+	width: 650px;
 	height: 600px;
 	overflow-y: auto;
 	text-align: left;
@@ -113,7 +113,9 @@ body {
 	width: 170px;
 }
 #survey-close-btn {
-	float: right;
+	z-index: 0;
+	margin-left:45%;
+	margin-bottom: 10px;
 	padding: 5px;
 }
 #survey-close-btn:active {

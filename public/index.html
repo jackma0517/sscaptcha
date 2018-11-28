@@ -39,115 +39,13 @@
 
         <!-- <div class="obstacle"></div> -->
     <!-- ---------------------- -->
-    
-    <!--------- Survey --------->
+     <!--------- Survey--------->
     <div id = "modal">
         <div id = "modal-content">
-            <div class = "modal-header">
-                SSCaptcha Survey
-                <button class = "blue-button" id = "survey-close-btn">Close</button>
-            </div>
-            <div id="surveyContainer">
-                <p>            
-                <b>1. After how many attempts did you need to complete the test?</b><br>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="num-attempts" value="1"> 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="num-attempts" value="2"> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="num-attempts" value="3"> 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="num-attempts" value="4"> 4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="num-attempts" value="5"> 5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="num-attempts" value="More than 5"> More than 5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="num-attempts" value="Couldn't Solve"> Couldn't Solve<br><br>
-
-                <b>2. How much time did you spend in order to solve the CAPTCHA?</b><br>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="solve-time" value="Less than 10 seconds"> Less than 10 seconds &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="solve-time" value="10 to 30 seconds"> 10 to 30 seconds &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="solve-time" value="30 seconds to 1 min"> 30 seconds to 1 min &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="solve-time" value="1 to 2 min"> 1 to 2 min &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <br> &nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="solve-time" value="More than 2 min"> More than 2 min<br><br>
-
-                <b>3. Would you willing to use this CAPTCHA again?</b><br>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="solve-again" value="Yes"> Yes &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="solve-again" value="No"> No<br><br>
-
-                <b>4. How easily could you recognise the shape(s)?</b><br>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="recognize-shapes" value="Very Easily"> Very Easily &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="recognize-shapes" value="Easily"> Easily &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="recognize-shapes" value="Not Easily"> Not Easily<br><br>
-
-                <b>5. What was the level of ambiguity in recognising of the shapes? </b><br>
-                &nbsp;&nbsp;&nbsp; <i>1 being not ambiguous and 10 being very ambiguous </i><br>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="ambiguity-level" value="1"> 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="ambiguity-level" value="2"> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="ambiguity-level" value="3"> 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="ambiguity-level" value="4"> 4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="ambiguity-level" value="5"> 5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="ambiguity-level" value="6"> 6 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="ambiguity-level" value="7"> 7 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="ambiguity-level" value="8"> 8 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="ambiguity-level" value="9"> 9 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="ambiguity-level" value="10"> 10<br><br>
-
-                <b>6. How do you rate the CAPTCHA in terms of difficulty? </b><br>
-                &nbsp;&nbsp;&nbsp; <i>1 being not difficult and 10 being very difficult </i><br> 
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="difficulty-level" value="1"> 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="difficulty-level" value="2"> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="difficulty-level" value="3"> 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="difficulty-level" value="4"> 4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="difficulty-level" value="5"> 5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="difficulty-level" value="6"> 6 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="difficulty-level" value="7"> 7 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="difficulty-level" value="8"> 8 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="difficulty-level" value="9"> 9 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="difficulty-level" value="10"> 10<br><br>
-
-                <b>7. What is your opinion about the size of the shape(s) in this CAPTCHA? </b><br>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="shape-sizes" value="Too Small"> Too Small &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="shape-sizes" value="Just Right"> Just Right &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="shape-sizes" value="Too Big"> Too Big<br><br>
-
-                <b>8. How difficult did you find the CAPTCHA application to work/interact with? </b><br>
-                &nbsp;&nbsp;&nbsp;<i>1 being not difficult and 10 being very difficult </i><br> 
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="interactive-difficulty" value="1"> 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="interactive-difficulty" value="2"> 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="interactive-difficulty" value="3"> 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="interactive-difficulty" value="4"> 4 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="interactive-difficulty" value="5"> 5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="interactive-difficulty" value="6"> 6 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="interactive-difficulty" value="7"> 7 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="interactive-difficulty" value="8"> 8 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="interactive-difficulty" value="9"> 9 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="interactive-difficulty" value="10"> 10<br><br>
-
-                <b>9. Which Captcha do you prefer? </b><br>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <img class = "survey-image" src = "./images/text-captcha.PNG" alt = "text-based captcha">
-                <img class = "survey-image" src = "./images/BobCat.gif" alt = "SSCaptcha"> <br>
-                &nbsp;<input type="radio" name="text-SS" value="text-captcha"> text-captcha &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="text-SS" value="SSCaptcha"> SSCaptcha <br><br>
-
-                <b>10. Which Captcha do you prefer? </b><br>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <img class = "survey-image" src = "./images/image-captcha.jpg" alt = "text-based captcha">
-                <img class = "survey-image" src = "./images/BobCat.gif" alt = "SSCaptcha"> <br>
-                &nbsp;<input type="radio" name="image-SS" value="text-captcha"> image-captcha &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="image-SS" value="SSCaptcha"> SSCaptcha <br><br>
-
-                </p>
-                <button class = "blue-button" id = "survey-submit-btn">Submit</button>
-            </div>
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdLJZATh27WHdjP_Pmh1L8fPYg_PJIyR8tM_61g8UqxqV75Aw/viewform?embedded=true" width="640" height="2650" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+            <button id='survey-close-btn' class = "blue-button">Close</button>
         </div>
-      </div>
+      </div> 
     <!-- ---------------------- -->
     </body>
 </html>
