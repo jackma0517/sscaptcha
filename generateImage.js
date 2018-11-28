@@ -18,7 +18,7 @@ const image_height = 500;
 const icon_size = 100;
 
 // 1: ugly squares, 2: triangles, 3: imagemagick
-const bg_generator_version = 1;
+const bg_generator_version = 2;
 
 // minimum and maximum number of labels on the board
 const min_icons = 5;
@@ -70,7 +70,8 @@ function extendPalette(palette, num) {
 function getPalette() {
     // return PALETTES[Math.floor(Math.random() * PALETTES.length)];
     let palette = [];
-    let palette_raw = PALETTES_CONTRAST[Math.floor(Math.random() * PALETTES_CONTRAST.length)];
+    let palette_raw = PALETTES_CONTRAST[Math.floor(Math.random() * PALETTES_CONTRAST.length)].slice(); // use slice to create copy
+    console.log('Using palette: ' + palette_raw);
     palette[0] = palette_raw[0];
     palette_raw.shift();
     let extended_palette = extendPalette(palette_raw, max_icons);

@@ -52,10 +52,10 @@ async function verify(solutionID, mouseClicks, mouseMovement){
         if(!checkMouseClick(solution, mouseClicks)){
             reject("mouse click doesn't match");
         }
-        if (!checkMouseAvoid(solution, mouseMovement)) {
+        else if (!checkMouseAvoid(solution, mouseMovement)) {
             reject("Did not avoid obstacles");
         }
-        if(!checkMouseMovement(mouseMovement)){
+        else if(!checkMouseMovement(mouseMovement)){
             reject("mouse movement is suspicious");
         }
         resolve("human");
@@ -91,6 +91,8 @@ function checkMouseAvoid(solutions, mouseMovement) {
     for (var i = 0; i < mouseMovement.length; i++) {
         for (var j = 0; j < avoidSolution.length; j++) {
             if (checkProximity(mouseMovement[i], avoidSolution[j])) {
+                console.log('This coordinate failed:');
+                console.log(mouseMovement[i]);
                 return false;
             }
         }
