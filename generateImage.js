@@ -18,7 +18,7 @@ const image_height = 500;
 const icon_size = 100;
 
 // 1: ugly squares, 2: triangles, 3: imagemagick
-const bg_generator_version = 2;
+const bg_generator_version = 1;
 
 // minimum and maximum number of labels on the board
 const min_icons = 5;
@@ -71,7 +71,6 @@ function getPalette() {
     // return PALETTES[Math.floor(Math.random() * PALETTES.length)];
     let palette = [];
     let palette_raw = PALETTES_CONTRAST[Math.floor(Math.random() * PALETTES_CONTRAST.length)].slice(); // use slice to create copy
-    console.log('Using palette: ' + palette_raw);
     palette[0] = palette_raw[0];
     palette_raw.shift();
     let extended_palette = extendPalette(palette_raw, max_icons);
@@ -269,6 +268,24 @@ function getRandom8BitValue() {
     return Math.floor(Math.random() * 255);
 }
 
+
+/**
+ * Applies random noise to function
+ * @param {JIMP_img} img 
+ */
+function applyNoiseToIcon(img) {
+    let noise_percentage = 0.01;
+    img.scan(0, 0, img.bitmap.width, img.bitmap.height, (x, y, idx) => {
+        if (Math.random() < noise_percentage) {
+            // add noise
+            img.bitmap.data[idx + 0] = Math.round(Math.random() * 255) // red
+            img.bitmap.data[idx + 1] = Math.round(Math.random() * 255) // green
+            img.bitmap.data[idx + 2] = Math.round(Math.random() * 255) // blue
+            img.bitmap.data[idx + 3] = Math.round(Math.random() * 255) // alpha
+        }
+    });
+}
+
 /**
  * Applies some processing to the icon
  * @param {JIMP_img} icon_img 
@@ -283,6 +300,8 @@ function processIcon(icon_img, color) {
         {apply: 'green', params: [rgb.g]},
         {apply: 'blue', params: [rgb.b]}
     ]);
+    applyNoiseToIcon(icon_img);
+    icon_img.posterize(8);
 }
 
 /**
