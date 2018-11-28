@@ -10,7 +10,8 @@ var uuid = require('uuid/v4');
 // Db Access
 var sqlite3 = require('sqlite3').verbose()
 require('dotenv').config({path:'./.env'})
-var db = new sqlite3.Database(process.env.SQLITE_DB)
+var db = new sqlite3.Database("./sscaptcha.sqlite")
+//var db = new sqlite3.Database(process.env.SQLITE_DB)
 
 // Image size constants
 const image_width = 800;
