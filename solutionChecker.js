@@ -62,11 +62,11 @@ async function verify(solutionID, mouseClicks, mouseMovement){
     });
 }
 
-function checkProximity(c1, icon_coordinate) {
-    if((c1[0] < icon_coordinate[0]) || (c1[0] > icon_coordinate[0]+pngSize)) {
+function checkProximity(c1, icon_coordinate, threshold) {
+    if((c1[0] < icon_coordinate[0]) || (c1[0] > icon_coordinate[0] + threshold)) {
         return false;
     }
-    if((c1[1] < icon_coordinate[1]) || (c1[1] > icon_coordinate[1]+pngSize)) {
+    if((c1[1] < icon_coordinate[1]) || (c1[1] > icon_coordinate[1] + threshold)) {
         return false;
     }
     return true;
@@ -90,9 +90,7 @@ function checkMouseAvoid(solutions, mouseMovement) {
 
     for (var i = 0; i < mouseMovement.length; i++) {
         for (var j = 0; j < avoidSolution.length; j++) {
-            if (checkProximity(mouseMovement[i], avoidSolution[j])) {
-                console.log('This coordinate failed:');
-                console.log(mouseMovement[i]);
+            if (checkProximity(mouseMovement[i], avoidSolution[j], pngSize*0.8)) {
                 return false;
             }
         }
@@ -120,7 +118,7 @@ function checkMouseClick(solutions, mouseClicks){
     }
 
     for(var i = 0; i< solutionMouseClicks.length; i++){
-        if (!checkProximity(mouseClicks[i], solutionMouseClicks[i])) {
+        if (!checkProximity(mouseClicks[i], solutionMouseClicks[i], pngSize * 1.2)) {
             return false;
         }
     }
