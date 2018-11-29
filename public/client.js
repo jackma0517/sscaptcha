@@ -5,7 +5,7 @@
 var mouseMovementArray = [];
 var mouseClicksArray = [];
 var ID = "";
-var url = 'http://localhost:8080';
+var url = 'http://localhost:5000';
 
 var recorder = {
     
@@ -245,13 +245,6 @@ window.onload = function () {
   })
   document.getElementById("survey-close-btn").addEventListener('click', function(){
     hideSurvey();
-  })
-  document.getElementById("survey-submit-btn").addEventListener('click', function(){
-    if( !checkSurveyComplete()){
-      alert("All Questions Must Be Answered To Submit");
-    } else {
-      submitSurvey(totalTime);
-    }
   })
 }
 
