@@ -84,17 +84,11 @@ body {
 	overflow: auto; /* enable scrolling if needed */
 	display: none;
 }
+
 #modal-content {
-	background-color: #F8F8F8;
-	margin-top: 7%; /* 10% from the top */
-	margin-left: 25%;
-  	border: 1px solid #888;
-	width: 650px;
-	height: 600px;
-	overflow-y: auto;
-	text-align: left;
-	font: 18px/24px Inconsolata, Arial;
+	margin-left: 21%;
 }
+
 .modal-header {
 	background-color: #D3D3D3;
 	width: 980px;
