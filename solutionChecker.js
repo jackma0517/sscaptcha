@@ -13,6 +13,22 @@ var db = new sqlite3.Database(process.env.SQLITE_DB)
 
 const pngSize = 100;
 
+/**
+ * Deletes the solution
+ * @param {guid} solutionID 
+ */
+function deleteSolution(solutionID) {
+    var sql = 'delete from captchas where guid = ?';
+    db.run(sql, [solutionID]);
+}
+
+
+/**
+ * Obtains the solution of the captcha and
+ * deletes it from the database.
+ * Should not call this twice with the same solution id.
+ * @param {guid} solutionID 
+ */
 function getSolution(solutionID) {
     var sql = 'select solution from captchas where guid = ?';
     return new Promise(function(resolve,reject){
@@ -22,6 +38,7 @@ function getSolution(solutionID) {
                 reject(err);
             } else {
                 resolve(JSON.parse(result.solution));
+                deleteSolution(solutionID);
             }
         })
     });
@@ -35,21 +52,21 @@ async function verify(solutionID, mouseClicks, mouseMovement){
         if(!checkMouseClick(solution, mouseClicks)){
             reject("mouse click doesn't match");
         }
-        if (!checkMouseAvoid(solution, mouseMovement)) {
+        else if (!checkMouseAvoid(solution, mouseMovement)) {
             reject("Did not avoid obstacles");
         }
-        if(!checkMouseMovement(mouseMovement)){
+        else if(!checkMouseMovement(mouseMovement)){
             reject("mouse movement is suspicious");
         }
         resolve("human");
     });
 }
 
-function checkProximity(c1, icon_coordinate) {
-    if((c1[0] < icon_coordinate[0]) || (c1[0] > icon_coordinate[0]+pngSize)) {
+function checkProximity(c1, icon_coordinate, threshold) {
+    if((c1[0] < icon_coordinate[0]) || (c1[0] > icon_coordinate[0] + threshold)) {
         return false;
     }
-    if((c1[1] < icon_coordinate[1]) || (c1[1] > icon_coordinate[1]+pngSize)) {
+    if((c1[1] < icon_coordinate[1]) || (c1[1] > icon_coordinate[1] + threshold)) {
         return false;
     }
     return true;
@@ -73,7 +90,7 @@ function checkMouseAvoid(solutions, mouseMovement) {
 
     for (var i = 0; i < mouseMovement.length; i++) {
         for (var j = 0; j < avoidSolution.length; j++) {
-            if (checkProximity(mouseMovement[i], avoidSolution[j])) {
+            if (checkProximity(mouseMovement[i], avoidSolution[j], pngSize*0.8)) {
                 return false;
             }
         }
@@ -101,7 +118,7 @@ function checkMouseClick(solutions, mouseClicks){
     }
 
     for(var i = 0; i< solutionMouseClicks.length; i++){
-        if (!checkProximity(mouseClicks[i], solutionMouseClicks[i])) {
+        if (!checkProximity(mouseClicks[i], solutionMouseClicks[i], pngSize * 1.2)) {
             return false;
         }
     }
