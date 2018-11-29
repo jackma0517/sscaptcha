@@ -6,18 +6,20 @@ var mouseMovementArray = [];
 var mouseClicksArray = [];
 var ID = "";
 var url = 'http://localhost:8080';
+var img = null; //document.getElementById('captcha-image');
 
 var recorder = {
     
     moveListener:function() {
       var that = this;
-
       $(window).mousemove(function(e) {
         if(that.state == 1) {
             //hardcoding value to be within the captcha image
-            if((e.clientX > 200 && e.clientX < 1000) && (e.clientY > 200 && e.clientY < 700)){
+            let x = e.clientX - img.offsetLeft;
+            let y = e.clientY - img.offsetTop;
+            if((x > 0 && x < 800) && (y > 0 && y < 500)){
                 that.frames.push([e.clientX, e.clientY]);
-                mouseMovementArray.push([e.clientX, e.clientY]);   
+                mouseMovementArray.push([x, y]);   
             }
         }
       });
@@ -66,10 +68,6 @@ var recorder = {
 recorder.state = 1; //1 = Recording | 2 = Stopped
 recorder.frames = [];
 
-/*
- * Listen for the mouse movements
- */
-recorder.moveListener();
 
 
 
@@ -81,7 +79,7 @@ recorder.moveListener();
 function ajaxPost(url, data, onSuccess, onError) {
     var xhttp = new XMLHttpRequest();
     var payload = JSON.stringify(data);
-    console.log(payload);
+    // console.log(payload);
   
     xhttp.open('POST', url, true);
     xhttp.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
@@ -89,8 +87,8 @@ function ajaxPost(url, data, onSuccess, onError) {
     xhttp.onload = function() {
       var status = xhttp.status;
       if (status == 200) { /* Success */
-        console.log("POST success");
-        console.log("response: " + xhttp.responseText);
+        // console.log("POST success");
+        // console.log("response: " + xhttp.responseText);
         //var responseObj = JSON.parse(xhttp.responseText);
         if(onSuccess){
           onSuccess(xhttp.responseText);
@@ -117,12 +115,12 @@ function ajaxGet(url) {
   
     xhttp.open('GET', url, true);
     xhttp.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
-    console.log('Sending an AJAXGet to: ' + url);
+    // console.log('Sending an AJAXGet to: ' + url);
   
     xhttp.onload = function() {
       var status = xhttp.status;
       if (status == 200) { /* Success */
-        console.log("GET success");
+        // console.log("GET success");
         var payload = JSON.parse(xhttp.responseText)
         document.getElementById('captcha-image').setAttribute(
           'src', payload[0]
@@ -135,7 +133,7 @@ function ajaxGet(url) {
         instruction_box.textContent = "";
         instruction_box.append(instruction_header);
 
-        console.log('Instructions');
+        // console.log('Instructions');
         var instrStr = payload[1].toString();
         var count = 0;
         var step = 1;
@@ -154,7 +152,7 @@ function ajaxGet(url) {
           }
         }
 
-        console.log('Board GUID for solution ' + payload[2]);
+        // console.log('Board GUID for solution ' + payload[2]);
         ID = payload[2];
         //var responseObj = JSON.parse(xhttp.responseText);
 
@@ -162,7 +160,7 @@ function ajaxGet(url) {
         //alert(message);
       } else if (status.toString().charAt(0) == 4 || status.toString().charAt(0) == 5) {
         /* Client or network error */
-        console.log("GET failure");
+        // console.log("GET failure");
       }  
     }
     xhttp.send();
@@ -191,6 +189,12 @@ window.onload = function () {
   var startTime = performance.now();
   var totalTime = 0;
 
+  /*
+  * Listen for the mouse movements
+  */
+  img = document.getElementById('captcha-image');
+  recorder.moveListener();
+
   //starts recording on load
   recorder.record();
   ajaxGet(url + '/captcha');
@@ -207,7 +211,7 @@ window.onload = function () {
         mouseClicks: mouseClicksArray,
           solutionID: ID
       };
-      console.log(mouseClicksArray);
+      // console.log(mouseClicksArray);
         ajaxPost(url + '/submit', data, function(response){
           if(response == "human"){
             alert("You have been identified as human! \n Please take a moment to complete our survey");

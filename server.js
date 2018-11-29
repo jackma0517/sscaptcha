@@ -55,8 +55,8 @@ async function obtainCaptcha(request, response) {
 app.post('/submit', function(request, response) {
 	//console.log("Mouse Movements: ");
 	//console.log(request.body.mouseMovements);
-	console.log("Mouse Clicks: ");
-	console.log(request.body.mouseClicks);
+	// console.log("Mouse Clicks: ");
+	// console.log(request.body.mouseClicks);
 	console.log("solution ID: " + request.body.solutionID);
 
 	var verifyPromise = solutionChecker.verify(request.body.solutionID, request.body.mouseClicks, request.body.mouseMovements);

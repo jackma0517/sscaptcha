@@ -22,7 +22,7 @@ const bg_generator_version = 1;
 
 // minimum and maximum number of labels on the board
 const min_icons = 5;
-const max_icons = 10;
+const max_icons = 7;
 
 // minimum and maximum number of instructions to show user
 const min_instructions = 2;
@@ -350,11 +350,11 @@ async function constructBoardImage(board_filename, icons) {
 }
 
 /* Simple get random action function */
-//const instruction_array = ['MOVE', 'CLICK', 'AVOID']
+//const instruction_array = ['HOVER', 'CLICK', 'AVOID']
 // The 'NONE' instruction is just noise to the board
 // Only send click instructions for now
 const noop_instruction = 'NONE';
-const instruction_array = ['CLICK', 'AVOID']
+const instruction_array = ['CLICK', 'AVOID', 'HOVER']
 function getRandomInstruction() {
     return instruction_array[Math.floor(Math.random() * instruction_array.length)];
 }
@@ -397,12 +397,8 @@ function strFormat() {
     return s;
 }
 
-const MOVE_SENTENCES = [
-    'Move your mouse to the {label}',
-    'Drag your mouse to the {label}',
-    'To {label}, you should slide your mouse', // Yoda is that you?
-    'Drag your cursor to the {label}',
-    'Move your cursor to the {label}',
+const HOVER_SENTENCES = [
+    'Wiggle your mouse over the {label}'
 ];
 
 const CLICK_SENTENCES = [
@@ -423,8 +419,8 @@ const AVOID_SENTENCES = [
 function instruction_to_sentence(label, action) {
     let sentence = '';
 	switch(action) {
-        case "MOVE":
-            sentence = (MOVE_SENTENCES[Math.floor(Math.random() * MOVE_SENTENCES.length)]).replace('{label}', label);
+        case "HOVER":
+            sentence = (HOVER_SENTENCES[Math.floor(Math.random() * HOVER_SENTENCES.length)]).replace('{label}', label);
 			break;
 		case "CLICK":
             sentence = (CLICK_SENTENCES[Math.floor(Math.random() * CLICK_SENTENCES.length)]).replace('{label}', label);
@@ -495,7 +491,7 @@ module.exports = {
     generateBoard: generateBoard
 }
 
-generateBoard()
+// generateBoard()
 
 // MIND MAP:
 //

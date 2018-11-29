@@ -52,8 +52,8 @@ async function verify(solutionID, mouseClicks, mouseMovement){
         if(!checkMouseClick(solution, mouseClicks)){
             reject("mouse click doesn't match");
         }
-        else if (!checkMouseAvoid(solution, mouseMovement)) {
-            reject("Did not avoid obstacles");
+        else if (!checkMouseAvoidHover(solution, mouseMovement)) {
+            reject("Missed an avoid/hover command");
         }
         else if(!checkMouseMovement(mouseMovement)){
             reject("mouse movement is suspicious");
@@ -62,39 +62,60 @@ async function verify(solutionID, mouseClicks, mouseMovement){
     });
 }
 
-function checkProximity(c1, icon_coordinate, threshold) {
-    if((c1[0] < icon_coordinate[0]) || (c1[0] > icon_coordinate[0] + threshold)) {
+function checkProximity(c1, icon_coordinate, icon_size, error_threshold) {
+    if((c1[0] < (icon_coordinate[0] - error_threshold)) || (c1[0] > (icon_coordinate[0] + icon_size + error_threshold))) {
         return false;
     }
-    if((c1[1] < icon_coordinate[1]) || (c1[1] > icon_coordinate[1] + threshold)) {
+    if((c1[1] < (icon_coordinate[1] - error_threshold)) || (c1[1] > (icon_coordinate[1] + icon_size + error_threshold))) {
         return false;
     }
     return true;
 }
 
-function checkMouseAvoid(solutions, mouseMovement) {
+function checkMouseAvoidHover(solutions, mouseMovement) {
     var avoidSolution = [];
+    var hoverSolution = [];
 
-    console.log('Mouse movement resolution: ' + mouseMovement.length);
+    //console.log('Mouse movement resolution: ' + mouseMovement.length);
 
-    // Filter for avoid solution
+    // Filter solutions
     for (var i = 0; i < solutions.length; i++) {
         if (solutions[i][0] == 'AVOID') {
             avoidSolution.push(solutions[i][1]);
         }
+        if (solutions[i][0] == 'HOVER') {
+            hoverSolution.push(solutions[i][1]);
+        }
     }
 
-    console.log("Comparing mouse movement to icons which needs to be avoided");
-    console.log("Coordinates to avoid:");
-    console.log(avoidSolution);
-
     for (var i = 0; i < mouseMovement.length; i++) {
-        for (var j = 0; j < avoidSolution.length; j++) {
-            if (checkProximity(mouseMovement[i], avoidSolution[j], pngSize*0.8)) {
-                return false;
+        if (avoidSolution.length > 0) {
+            for (var j = 0; j < avoidSolution.length; j++) {
+                if (checkProximity(mouseMovement[i], avoidSolution[j], pngSize, 0)) {
+                    //console.log('Did not avoid ' + avoidSolution[j])
+                    return false;
+                }
+            }
+        }
+        if (hoverSolution.length > 0) {
+            for (var k = 0; k < hoverSolution.length; k++) {
+                if (checkProximity(mouseMovement[i], hoverSolution[k], pngSize, 0)) {
+                    // console.log('Hover over :'  + hoverSolution[k]);
+                    // If we hovered over it, then remove it from the list
+                    hoverSolution.splice(k, 1);
+                }
             }
         }
     }
+    
+    if (hoverSolution.length > 0) {
+        // There are things we didn't hover over,
+        // fail the test
+        // console.log('Missed hover over:');
+        // console.log(hoverSolution);
+        return false;
+    }
+
     return true;
 }
 
@@ -108,17 +129,17 @@ function checkMouseClick(solutions, mouseClicks){
         }
     }
 
-    console.log('Checking mouse clicks:');
-    console.log(mouseClicks);
-    console.log('compared to solution:');
-    console.log(solutionMouseClicks);
+    // console.log('Checking mouse clicks:');
+    // console.log(mouseClicks);
+    // console.log('compared to solution:');
+    // console.log(solutionMouseClicks);
 
     if(mouseClicks.length < solutionMouseClicks.length){
         return false;
     }
 
     for(var i = 0; i< solutionMouseClicks.length; i++){
-        if (!checkProximity(mouseClicks[i], solutionMouseClicks[i], pngSize * 1.2)) {
+        if (!checkProximity(mouseClicks[i], solutionMouseClicks[i], pngSize, pngSize*0.2)) {
             return false;
         }
     }
