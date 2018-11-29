@@ -1,11 +1,11 @@
 /*
  * Global Variable to store Mouse Movements
- * Sorry this is so unorganized and inconsistent D; it hurts me too
  */
 var mouseMovementArray = [];
 var mouseClicksArray = [];
 var ID = "";
-var url = 'http://localhost:8080';
+//var url = 'http://localhost:8080'; //local
+var url = 'https://sscaptcha.herokuapp.com'; //deployed
 var img = null; //document.getElementById('captcha-image');
 
 var recorder = {
@@ -69,17 +69,12 @@ recorder.state = 1; //1 = Recording | 2 = Stopped
 recorder.frames = [];
 
 
-
-
-
-
 /*
  * AJAX Post Request
  */
 function ajaxPost(url, data, onSuccess, onError) {
     var xhttp = new XMLHttpRequest();
     var payload = JSON.stringify(data);
-    // console.log(payload);
   
     xhttp.open('POST', url, true);
     xhttp.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
@@ -87,15 +82,9 @@ function ajaxPost(url, data, onSuccess, onError) {
     xhttp.onload = function() {
       var status = xhttp.status;
       if (status == 200) { /* Success */
-        // console.log("POST success");
-        // console.log("response: " + xhttp.responseText);
-        //var responseObj = JSON.parse(xhttp.responseText);
         if(onSuccess){
           onSuccess(xhttp.responseText);
         }
-        //var message = responseObj.boop;
-        //alert(message);
-
       } else if (status.toString().charAt(0) == 4 || status.toString().charAt(0) == 5) {
         /* Client or network error */
         console.log("POST failure");
@@ -115,17 +104,16 @@ function ajaxGet(url) {
   
     xhttp.open('GET', url, true);
     xhttp.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
-    // console.log('Sending an AJAXGet to: ' + url);
   
     xhttp.onload = function() {
       var status = xhttp.status;
       if (status == 200) { /* Success */
-        // console.log("GET success");
         var payload = JSON.parse(xhttp.responseText)
         document.getElementById('captcha-image').setAttribute(
           'src', payload[0]
         );
 
+        //Format instructions
         var instruction_header = document.createElement("h4");
         instruction_header.innerHTML = "Instructions";
         var instruction_box = document.getElementById('instruction-textbox');
@@ -133,7 +121,6 @@ function ajaxGet(url) {
         instruction_box.textContent = "";
         instruction_box.append(instruction_header);
 
-        // console.log('Instructions');
         var instrStr = payload[1].toString();
         var count = 0;
         var step = 1;
@@ -144,23 +131,21 @@ function ajaxGet(url) {
             }else {
               var temp = step + ". " + instrStr.substring(count, i);
             }
-            var newLine = document.createElement("br");
             count = i+1;
             step = step+1;
+            var newLine = document.createElement("br");
             instruction_box.append(temp);
             instruction_box.append(newLine);
           }
         }
+        var clickSubmitInstruction = document.createElement("b");
+        clickSubmitInstruction.innerHTML = step +". Click 'Sumbit Captcha' Button";
+        instruction_box.append(clickSubmitInstruction);
 
-        // console.log('Board GUID for solution ' + payload[2]);
         ID = payload[2];
-        //var responseObj = JSON.parse(xhttp.responseText);
 
-        //var message = responseObj.boop;
-        //alert(message);
       } else if (status.toString().charAt(0) == 4 || status.toString().charAt(0) == 5) {
         /* Client or network error */
-        // console.log("GET failure");
       }  
     }
     xhttp.send();
@@ -204,18 +189,15 @@ window.onload = function () {
     if(mouseMovementArray.length == 0){
       alert("Please record mouse movements before submitting captcha");
     } else {
-    //playback mouse movements to user for better usability?
-      //recorder.playback();
       var data = {
         mouseMovements: mouseMovementArray,
         mouseClicks: mouseClicksArray,
           solutionID: ID
       };
-      // console.log(mouseClicksArray);
         ajaxPost(url + '/submit', data, function(response){
           if(response == "human"){
             alert("You have been identified as human! \n Please take a moment to complete our survey");
-            //window.location = url + '/success.html';
+
             //get time to complete
             var endTime = performance.now();
             totalTime = endTime - startTime;
@@ -250,69 +232,9 @@ window.onload = function () {
   document.getElementById("survey-close-btn").addEventListener('click', function(){
     hideSurvey();
   })
-}
-
-function checkSurveyComplete(){
-  if($("input[name=num-attempts]:checked").val() == undefined ||
-     $("input[name=solve-time]:checked").val() == undefined ||
-     $("input[name=solve-again]:checked").val() == undefined ||
-     $("input[name=recognize-shapes]:checked").val() == undefined ||
-     $("input[name=ambiguity-level]:checked").val() == undefined ||
-     $("input[name=difficulty-level]:checked").val() == undefined ||
-     $("input[name=shape-sizes]:checked").val() == undefined ||
-     $("input[name=interactive-difficulty]:checked").val() == undefined ||
-     $("input[name=text-SS]:checked").val() == undefined ||
-     $("input[name=image-SS]:checked").val() == undefined){
-      return false;
-  } 
-  return true;
-}
-
-function clearRadioButtonList(){
-  var radioButtonList = document.getElementsByTagName('input');
-  for (var i = 0; i < radioButtonList.length; i++) {
-    var inputElement = radioButtonList[i];
-    inputElement.checked = false;
-  }
-  return false;
-}
-
-function searchDOMTree(element, name) {
-  while (element.className != name) {
-    //search all siblings of element for class name
-    element = element.nextSibling;
-    if (!element) {
-      alert("cannot find element: ", name);
-    }
-  }
-  return element;
-}
-
-function submitSurvey(totalTime){
-
-  var surveyResults = {
-    recorded_time_ms : totalTime,  
-    num_attempts : $("input[name=num-attempts]:checked").val(),
-    solve_time : $("input[name=solve-time]:checked").val(),
-    solve_again : $("input[name=solve-again]:checked").val(),
-    recognize_shapes : $("input[name=recognize-shapes]:checked").val(),
-    ambiguity_level : $("input[name=ambiguity-level]:checked").val(),
-    difficulty_level : $("input[name=difficulty-level]:checked").val(),
-    shape_sizes : $("input[name=shape-sizes]:checked").val(),
-    interactive_difficulty : $("input[name=interactive-difficulty]:checked").val(),
-    text_SS : $("input[name=text-SS]:checked").val(),
-    image_SS: $("input[name=image-SS]:checked").val() 
-  };
-
-  var data = {
-    surveyResults: surveyResults
-  };
-
-  ajaxPost(url + '/submitSurvey', data, function(){
-    alert("Thank you for participating :) ");
-    clearRadioButtonList();
+  document.getElementById("survey-X-btn").addEventListener('click', function(){
     hideSurvey();
-  }, function(){
-    alert("Error Receiving Survey. Please Submit Again");
-  });
+  })
 }
+
+

@@ -4,7 +4,6 @@ var express = require('express');
 
 var generateImage = require('./generateImage');
 var solutionChecker = require('./solutionChecker');
-//var http = require('http');
 var fs = require('fs'); // for base64 image
 
 
@@ -53,10 +52,7 @@ async function obtainCaptcha(request, response) {
 }
 
 app.post('/submit', function(request, response) {
-	//console.log("Mouse Movements: ");
-	//console.log(request.body.mouseMovements);
-	// console.log("Mouse Clicks: ");
-	// console.log(request.body.mouseClicks);
+
 	console.log("solution ID: " + request.body.solutionID);
 
 	var verifyPromise = solutionChecker.verify(request.body.solutionID, request.body.mouseClicks, request.body.mouseMovements);
@@ -68,9 +64,6 @@ app.post('/submit', function(request, response) {
         response.send(err);
     });
 
-
-	//var boop = JSON.stringify({boop: request.body.name + " has booped the server!"})
-	//response.send(boop);
 });
 
 app.post('/submitSurvey', function(request, response) {
