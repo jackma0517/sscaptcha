@@ -5,7 +5,7 @@
 var mouseMovementArray = [];
 var mouseClicksArray = [];
 var ID = "";
-var url = 'http://localhost:5000';
+var url = 'https://sscaptcha.herokuapp.com';
 
 var recorder = {
     
