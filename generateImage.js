@@ -19,7 +19,7 @@ const image_height = 500;
 const icon_size = 100;
 
 // 1: ugly squares, 2: triangles, 3: imagemagick
-const bg_generator_version = 1;
+const bg_generator_version = 2;
 
 // minimum and maximum number of labels on the board
 const min_icons = 5;
