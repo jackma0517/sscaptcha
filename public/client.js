@@ -4,7 +4,7 @@
 var mouseMovementArray = [];
 var mouseClicksArray = [];
 var ID = "";
-// var url = 'http://localhost:8080'; //local
+//var url = 'http://localhost:8080'; //local
 var url = 'https://sscaptcha.herokuapp.com'; //deployed
 var img = null; //document.getElementById('captcha-image');
 var startTime;
@@ -154,7 +154,7 @@ function ajaxGet(url) {
 
   function showSurvey() {
     var modal = document.getElementById("modal");
-    modal.style.display = "flex";
+    modal.style.display = "block";
 
 
     $(document).keydown(function (e) {
@@ -238,7 +238,9 @@ window.onload = function () {
     ajaxGet(url + '/captcha');
     startTime = performance.now();
   })
-
+  document.getElementById("about-btn").addEventListener('click', function(){
+    window.location = url + "/about.html";
+  })
   document.getElementById("captcha-image").addEventListener('click', function(e){
     var x = e.pageX - this.offsetLeft;
     var y = e.pageY - this.offsetTop;
@@ -249,9 +251,6 @@ window.onload = function () {
     showSurvey();
   })
   document.getElementById("survey-close-btn").addEventListener('click', function(){
-    hideSurvey();
-  })
-  document.getElementById("survey-X-btn").addEventListener('click', function(){
     hideSurvey();
   })
 }

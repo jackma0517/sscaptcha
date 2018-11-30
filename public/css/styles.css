@@ -36,10 +36,6 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 }
-#about {
-	visibility: hidden;
-}
-
 #submit-btn {
 	float: right;
 }
@@ -68,27 +64,24 @@ body {
 	height: 100%;
 	overflow: auto; /* enable scrolling if needed */
 	display: none;
+	text-align: center;
 }
 #modal-content {
-	margin-left: 21%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
 }
-#modal > #survey-close-btn {
-	bottom: -1960px;
-	margin-left: 48%; 
-	position: absolute;
-}
-#modal > #survey-thankyou {
-	bottom: -1930px;
-	margin-left: 40%; 
-	position: absolute;
+#survey-thankyou {
+
 	background-color: #4D94FF;
 	border: none;
 	color: #FFFFFF;
 	font: 18px Inconsolata, Arial;
 }
-#modal > #survey-X-btn {
-	margin-left: 72.7%;
-	padding-right: 5px;
-	padding-left: 5px; 
-	position: absolute;
+#footer{
+    position: relative;
+    margin-left: auto;
+	margin-right: auto;
+	top: -300px;
 }

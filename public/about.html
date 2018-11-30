@@ -3,7 +3,7 @@
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <link rel="stylesheet" href="css/styles.css">
-        <script src="client.js"></script>
+        <script src="about.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <link href="https://surveyjs.azureedge.net/1.0.56/survey.css" type="text/css" rel="stylesheet" />
@@ -20,12 +20,7 @@
         <button class = "blue-button" id="get-captcha">Get New Captcha </button>
         <button class = "blue-button" id = "survey-btn">Survey</button>
         <button class = "blue-button" id = "about-btn">About</button>
-        <div id = "captcha-wrapper">
-            <div class = "captcha" id = "captcha-container">
-                    <img id = "captcha-image">
-            </div>
-            <button class = "blue-button" id="submit-btn">Submit Captcha </button>
-        </div>
+       
      <!--------- Survey--------->
         <div id = "modal">
             <iframe id="modal-content" src="https://docs.google.com/forms/d/e/1FAIpQLSdLJZATh27WHdjP_Pmh1L8fPYg_PJIyR8tM_61g8UqxqV75Aw/viewform?embedded=true" width="800" height="3000" frameborder="0" marginheight="0" marginwidth="0">Loading... </iframe>
@@ -34,5 +29,26 @@
                 <button id='survey-close-btn' class = "blue-button">Close</button>
             </div>
         </div> 
+
+    <div id = "about">
+        <p>
+            Classical captchas based solely on recognizing distorted text have become weak due to the 
+            advances in Optical Character Recognition, machine learning, and artificial intelligence. 
+            Currently, industry practice is moving towards intrusively tracking the users’ data to 
+            determine if they’re behaving as expected.                 
+        </p>
+        <p>
+            S.S.CAPTCHA (Simon Says CAPTCHA) aims to show the feasibility of secure bot detection systems in the current age, 
+            while maintaining the classic challenge/response format. Along with not intrusively 
+            tracking user’s data, we worked to not add extra noise to images as well as decrease 
+            usability by adding an overwhelming amount of images to solve.
+        </p>
+        <p>
+            By using biometric analysis of mouse movements over the CAPTCHA image, along with 
+            context-based instruction, and image recognition, SSCAPTCHA combines three areas that are 
+            problematic for bots to solve in order to prevent them from accessing resources while
+            maintaining usability for humans.
+        </p>
+    </div> 
     </body>
 </html>
