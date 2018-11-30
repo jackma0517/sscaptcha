@@ -4,7 +4,7 @@
 var mouseMovementArray = [];
 var mouseClicksArray = [];
 var ID = "";
-//var url = 'http://localhost:8080'; //local
+// var url = 'http://localhost:8080'; //local
 var url = 'https://sscaptcha.herokuapp.com'; //deployed
 var img = null; //document.getElementById('captcha-image');
 

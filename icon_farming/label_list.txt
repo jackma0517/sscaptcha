@@ -5,11 +5,8 @@ bee
 bird
 camel
 cat
-cheetah
 chicken
-chimpanzee
 cow
-crocodile
 deer
 dog
 dolphin
@@ -18,11 +15,9 @@ eagle
 elephant
 fish
 fly
-fox
 frog
 giraffe
 goat
-goldfish
 hamster
 hippopotamus
 horse
@@ -32,10 +27,8 @@ lion
 lobster
 monkey
 octopus
-owl
 panda
 pig
-puppy
 rabbit
 rat
 scorpion
@@ -56,7 +49,6 @@ cherry
 grapes
 lemon
 orange
-peach
 pear
 pineapple
 plum
@@ -68,14 +60,11 @@ candy
 chocolate bar
 cookie
 donut
-doughnut
-fruit
 ice cream
 muffin
 pie
 potato chips
 pudding
-sweet roll
 drill
 hammer
 knife
@@ -93,7 +82,17 @@ horse
 jet
 motorcycle
 ship
-subway
-taxi
 train
 truck
+trumpet
+piano
+violin
+guitar
+harp
+chair
+table
+fork
+spoon
+chopsticks
+flower
+carrot
