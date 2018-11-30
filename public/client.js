@@ -4,8 +4,13 @@
 var mouseMovementArray = [];
 var mouseClicksArray = [];
 var ID = "";
+<<<<<<< HEAD
 var url = 'http://localhost:8080'; //local
 //var url = 'https://sscaptcha.herokuapp.com'; //deployed
+=======
+// var url = 'http://localhost:8080'; //local
+var url = 'https://sscaptcha.herokuapp.com'; //deployed
+>>>>>>> 38de9b3651311d912f8c507201926eb604c8fce3
 var img = null; //document.getElementById('captcha-image');
 
 var recorder = {
