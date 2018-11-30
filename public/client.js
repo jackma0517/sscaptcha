@@ -115,12 +115,14 @@ function ajaxGet(url) {
         );
 
         //Format instructions
-        var instruction_header = document.createElement("h4");
+        var instruction_header = document.createElement("b");
         instruction_header.innerHTML = "Instructions";
         var instruction_box = document.getElementById('instruction-textbox');
         //remove old instructions
         instruction_box.textContent = "";
         instruction_box.append(instruction_header);
+        var newLine = document.createElement("br");
+        instruction_box.append(newLine)
 
         var instrStr = payload[1].toString();
         var count = 0;

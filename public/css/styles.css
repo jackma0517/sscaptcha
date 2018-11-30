@@ -8,8 +8,8 @@ body {
     background-color: #E8E8E8;
 	clear: both;
 	font: 16px/24px Inconsolata, Arial, sans-serif;
-	padding-bottom: 5px;
-	padding-top: 1px;
+	padding-bottom: 0px;
+	padding-top: 0px;
 	position: relative;
 	width: 1000px;
 }
@@ -21,7 +21,7 @@ body {
 	background-color: #E8E8E8;
 	width: 1000px;
 	padding-bottom: 5px;
-	padding-top: 1px;
+	padding-top: 0px;
 	text-align: center;
 }
 .textbox {
@@ -83,5 +83,5 @@ body {
     position: relative;
     margin-left: auto;
 	margin-right: auto;
-	top: -300px;
+	top: -100px;
 }
