@@ -155,6 +155,7 @@ function ajaxGet(url) {
     var modal = document.getElementById("modal");
     modal.style.display = "flex";
 
+
     $(document).keydown(function (e) {
       if (e.keyCode == 27) { //esc button
         $("#modal").hide();
@@ -166,6 +167,20 @@ function ajaxGet(url) {
   function hideSurvey() {
     var modal = document.getElementById("modal");
     modal.style.display = "none";
+  }
+
+  function postTimeToSheet(totalTime){
+    var data = totalTime;
+   var urlSheet = 'https://script.google.com/macros/s/AKfycbzofDPtEHwFS8bHjSpmYz5extilLZvssTzqbS2vpEQebYFhjfU/exec';
+    console.log("data: " +data);
+
+    $.ajax({
+      url: urlSheet,
+      type: 'GET',
+      dataType: 'json',
+      data: {recorded_time: data}
+    });
+    
   }
 
 //called after all HTML/CSS/Scripts/DOM are loaded
@@ -202,6 +217,8 @@ window.onload = function () {
             var endTime = performance.now();
             totalTime = endTime - startTime;
             showSurvey();
+            console.log(totalTime);
+            postTimeToSheet(totalTime);
           } else {
             alert("You have been identified as a bot! \n If this is incorrect please get a new Captcha or complete our survey");
           }

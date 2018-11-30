@@ -15,39 +15,25 @@
             <h1>SSCaptcha</h1>
         </div>
         <div class = "instructions"> 
-            <div class = "textbox" id="instruction-textbox">
-               <!-- <b>Instructions</b>
-                <p> 1. Move cursor clockwise around the red dot once <br>
-                    2. Click both cat ears
-                </p>-->
-            </div>
+            <div class = "textbox" id="instruction-textbox"></div>
         </div>
         <button class = "blue-button" id="get-captcha">Get New Captcha </button>
         <button class = "blue-button" id = "survey-btn">Survey</button>
         <div class = "captcha">
             <img id = "captcha-image">
         </div>
-
         <button class = "blue-button" id="submit-btn">Submit Captcha </button>
 
     <!-- Record Mouse Movements -->
         <div class="cursor"></div>
-    <!--
-        <button class="p" onclick="recorder.playback()">stop & play</button>
-        <button class="r" onclick="recorder.record()">record</button> 
-    -->
 
-        <!-- <div class="obstacle"></div> -->
-    <!-- ---------------------- -->
      <!--------- Survey--------->
-    <div id = "modal">
-       <!-- <div id = "modal-content">-->
-        <button id='survey-X-btn' class = "blue-button">X</button>
-        <button id='survey-thankyou'>Thank you for participating! :)</button>
-        <iframe id="modal-content" src="https://docs.google.com/forms/d/e/1FAIpQLSdLJZATh27WHdjP_Pmh1L8fPYg_PJIyR8tM_61g8UqxqV75Aw/viewform?embedded=true" width="800" height="3000" frameborder="0" marginheight="0" marginwidth="0">Loading... </iframe>
-        <button id='survey-close-btn' class = "blue-button">Close</button>
-        
-    </div> 
+        <div id = "modal">
+            <button id='survey-X-btn' class = "blue-button">X</button>
+            <button id='survey-thankyou'>Thank you for participating! :)</button>
+            <iframe id="modal-content" src="https://docs.google.com/forms/d/e/1FAIpQLSdLJZATh27WHdjP_Pmh1L8fPYg_PJIyR8tM_61g8UqxqV75Aw/viewform?embedded=true" width="800" height="3000" frameborder="0" marginheight="0" marginwidth="0">Loading... </iframe>
+            <button id='survey-close-btn' class = "blue-button">Close</button>
+        </div> 
     <!-- ---------------------- -->
     </body>
 </html>
