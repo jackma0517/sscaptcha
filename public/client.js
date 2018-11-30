@@ -7,6 +7,7 @@ var ID = "";
 // var url = 'http://localhost:8080'; //local
 var url = 'https://sscaptcha.herokuapp.com'; //deployed
 var img = null; //document.getElementById('captcha-image');
+var startTime;
 
 var recorder = {
     
@@ -186,7 +187,7 @@ function ajaxGet(url) {
 //called after all HTML/CSS/Scripts/DOM are loaded
 window.onload = function () {
   //get start time
-  var startTime = performance.now();
+  startTime = performance.now();
   var totalTime = 0;
 
   /*
@@ -235,6 +236,7 @@ window.onload = function () {
   document.getElementById('get-captcha').addEventListener('click', function(){
     console.log('Client requesting CAPTCHA');
     ajaxGet(url + '/captcha');
+    startTime = performance.now();
   })
 
   document.getElementById("captcha-image").addEventListener('click', function(e){
