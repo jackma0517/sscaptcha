@@ -4,8 +4,8 @@
 var mouseMovementArray = [];
 var mouseClicksArray = [];
 var ID = "";
-//var url = 'http://localhost:8080'; //local
-var url = 'https://sscaptcha.herokuapp.com'; //deployed
+var url = 'http://localhost:8080'; //local
+//var url = 'https://sscaptcha.herokuapp.com'; //deployed
 var img = null; //document.getElementById('captcha-image');
 
 var recorder = {
@@ -169,6 +169,22 @@ function ajaxGet(url) {
     modal.style.display = "none";
   }
 
+  var show_about = 0; //0 = don't show, 1 = show
+
+  function showAbout(){
+    if(show_about == 0){
+      var submit_btn = document.getElementById("submit-btn");
+      submit_btn.parentNode.removeChild(submit_btn);
+  
+      var captcha = document.getElementById("captcha-image");
+      captcha.parentNode.removeChild(captcha);
+  
+      var about = document.getElementById("about");
+      about.style.visibility = "visible";
+      show_about = 1;
+    }
+  }
+
   function postTimeToSheet(totalTime){
     var data = totalTime;
    var urlSheet = 'https://script.google.com/macros/s/AKfycbzofDPtEHwFS8bHjSpmYz5extilLZvssTzqbS2vpEQebYFhjfU/exec';
@@ -233,6 +249,23 @@ window.onload = function () {
   })
 
   document.getElementById('get-captcha').addEventListener('click', function(){
+    if(show_about == 1){
+  
+      var captcha = document.createElement("img");
+      captcha.id = "captcha-image";
+      var captcha_div = document.getElementById("captcha-container");
+      captcha_div.appendChild(captcha);
+  
+      var submit_btn = document.createElement("button");
+      submit_btn.className = "blue-button";
+      submit_btn.id = "submit-btn";
+      submit_btn.innerHTML = "Submit Captcha";
+      document.getElementById("captcha-wrapper").appendChild(submit_btn);
+
+      var about = document.getElementById("about");
+      about.style.visibility = "hidden";
+      show_about = 0;
+    }
     console.log('Client requesting CAPTCHA');
     ajaxGet(url + '/captcha');
   })
@@ -245,6 +278,9 @@ window.onload = function () {
 
   document.getElementById("survey-btn").addEventListener('click', function(){
     showSurvey();
+  })
+  document.getElementById("about-btn").addEventListener('click', function(){
+    showAbout();
   })
   document.getElementById("survey-close-btn").addEventListener('click', function(){
     hideSurvey();

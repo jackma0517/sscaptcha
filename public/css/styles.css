@@ -36,6 +36,10 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 }
+#about {
+	visibility: hidden;
+}
+
 #submit-btn {
 	float: right;
 }
