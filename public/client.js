@@ -140,7 +140,7 @@ function ajaxGet(url) {
           }
         }
         var clickSubmitInstruction = document.createElement("b");
-        clickSubmitInstruction.innerHTML = step +". Click 'Sumbit Captcha' Button";
+        clickSubmitInstruction.innerHTML = step +". Click 'Submit Captcha' Button";
         instruction_box.append(clickSubmitInstruction);
 
         ID = payload[2];
